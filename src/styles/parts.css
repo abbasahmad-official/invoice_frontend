@@ -1,0 +1,309 @@
+/* button */
+
+.btnn button{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 2px 10px !important;
+    /* padding-right: 7px !important; */
+    border-radius: 6px;
+    background-color: black;
+    color: rgb(235, 233, 233);
+    border: none;
+    white-space: nowrap;
+}
+
+.btnn button:hover{
+    background-color: rgb(224, 224, 224) !important;
+    cursor: pointer;
+}
+
+.btnn .btn:hover{
+    background-color: rgb(27, 27, 27) !important;
+    cursor: pointer;
+}
+
+
+/* search bar */
+.search-container {
+    padding: 14px 14px 21px;
+    border: 1px solid lightgrey;
+    border-radius: 8px;
+    flex: 1;
+   display: flex;
+   gap: 15px;
+    background-color: white;
+}
+.search-container .search-box {
+    display: flex;
+    flex: 4;
+    align-items: center;
+    gap: 10px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    background-color: #F3F3F5;
+    transition: outline 0.3s ease-in-out;
+}
+
+.search-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    background-color: #F3F3F5;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+.search-box:focus-within {
+    border: 1px solid rgb(176, 176, 176);
+    outline: 4px solid lightgrey;
+}
+
+@media (max-width: 600px) {
+    .search-container {
+        flex-direction: column;
+    }
+    .search-container .filter {
+        justify-content: flex-start;
+    }
+}
+
+/* dropdown */
+.dummy{
+    position: relative;
+    flex: 1;
+}
+
+
+.dropdown {
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* gap: 10px; */
+    padding: 2px 6px;
+    border-radius: 6px;
+    background-color: #F3F3F5;
+    transition: outline 0.3s ease-in-out;
+    width: 100%;
+}
+
+.dropdown p{
+    font-size: 12px;
+}
+
+.dropdown-menu{
+    position: absolute;
+    background-color: white;
+    /* box-shadow: 0 0 6px 2px rgba(0,0,0,0.2); */
+    outline: 1px solid lightgrey;
+    border-radius: 6px; 
+    padding: 2px 6px;
+    width: 100%;
+    top: 108%;
+    left: 50%;
+    transform: translateX( -50%);
+    
+}
+
+.dropdown-menu p{
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 6px;
+}   
+.dropdown-menu p:hover{
+    background-color: #F3F3F5;
+    cursor: pointer;
+}
+
+.search-container .filter{
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+/* 1029 765 */
+/* card */
+.card{
+    display: flex;
+    flex-direction:column;
+    gap: 21px;
+    background-color: white;
+    padding: 14px 14px 21px;
+    border: 1px solid lightgrey;
+    border-radius: 8px;
+    width: 300px;
+    /* box-shadow: 0 0 6px 2px rgba(0,0,0,0.1); */
+}
+
+.card .card-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+/* table */
+/* Table Container */
+.table-container {
+  width: 100%;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  overflow-x: auto;   /* horizontal scroll for small screens */
+  padding: 16px;
+  margin: 16px 0;
+}
+
+/* Table Header Section */
+.table-header {
+  /* display: flex;
+  justify-content: space-between;
+  align-items: center; */
+  margin-bottom: 21px;
+  margin-left: 10px;
+  /* padding-bottom: 8px;
+  border-bottom: 2px solid #f0f0f0; */
+}
+
+.table-header p:first-child {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.table-header p:last-child {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Table Styles */
+.table-content table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* ensures scroll on small screens */
+}
+
+.table-content th,
+.table-content td {
+  padding: 5px 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #444;
+}
+
+.table-content th {
+  /* background: #f9fafb; */
+  font-weight: 600;
+  color: #222;
+}
+
+.table-content th:first-child{
+    padding-left: 0px;
+}
+
+.table-content th:last-child{
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Hover effect for rows */
+.table-content td:first-child{
+    padding-left: 0px;
+}
+.table-content td:first-child p{
+    color: #666;
+    font-size: 12px;
+}
+.table-content td:last-child .icons{
+    display: flex;
+    justify-content: flex-end;
+   gap: 10px;
+}
+.table-content td:last-child .icons *{
+    /* background-color: #dad8d8; */
+    padding: 5px;
+}
+.table-content td:last-child .icons *:hover{
+    background-color: #dad8d8;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: 0.2s ease-in-out;
+}
+
+/* color: #666; */
+.table-content tr:hover {
+  background: #f5f7fa;
+  transition: 0.2s ease-in-out;
+}
+
+/* Responsive: make table scroll nicely */
+.table-content::-webkit-scrollbar {
+  height: 6px;
+}
+.table-content::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 4px;
+}
+.Pending{
+    background-color: orange;
+    padding: 4px;
+    border-radius: 6px;
+    width: fit-content;
+}
+.Paid{
+    background-color: lightgreen;
+    padding: 4px;
+    border-radius: 6px;
+    width: fit-content;
+}
+.Overdue{
+    background-color: rgb(255, 105, 105);
+    padding: 4px;
+    border-radius: 6px;
+    width: fit-content;
+}
+
+
+
+
+
+
+/* tag card */
+.tag-card{
+    display: flex;
+    align-items: center;
+    gap: 21px;
+    /* background-color: white;
+    padding: 14px 14px 21px;
+    border: 1px solid lightgrey;
+    border-radius: 8px;
+    width: 300px; */
+}
+.tag-card {
+  flex: 1 1 calc(25% - 21px); /* 4 per row with gap */
+  min-width: 200px; /* optional, prevents cards from shrinking too much */
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.tag-card-container{
+    display: flex;
+    gap: 21px;
+    flex-wrap: wrap;
+    margin-bottom: 21px;
+}
+
+@media (max-width: 768px) {
+    .tag-card-container {
+        display: flex;
+        /* flex: 1 1 calc(50% - 21px); 2 per row on smaller screens */
+        flex-direction: column;
+    }
+}

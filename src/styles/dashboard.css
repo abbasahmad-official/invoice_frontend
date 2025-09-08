@@ -1,0 +1,170 @@
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.card-container{
+    display: flex;
+    gap: 21px;
+    flex-wrap: wrap;
+}
+
+.card {
+  flex: 1 1 calc(25% - 21px); /* 4 per row with gap */
+  min-width: 200px; /* optional, prevents cards from shrinking too much */
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+
+/* main bottom contaienr */
+.bottom-container{
+    display: flex;
+    gap: 21px;
+    margin-top: 21px;
+    /* justify-content: space-between; */
+}
+
+
+/* invoices container */
+
+.invoices{
+    display: flex;
+    border-radius: 12px;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 21px;
+    border: 1px solid lightgrey;
+    background-color: white;
+    padding: 21px;
+    flex: 2;
+    height: fit-content;
+}
+
+.recent-invoices-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* border-bottom: 1px solid lightgrey; */
+    padding-bottom: 14px;
+}
+.recent-invoices-container{
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    padding: 14px;
+    /* border-bottom: 1px solid lightgrey; */
+}
+
+.recent-invoices-container .recent-invoice{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 21px;
+    background-color: oklch(0.985 0.002 247.839);
+    border-radius: 16px;
+}
+.bottom-right{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+}   
+
+.quick-actions{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 21px;
+    border: 1px solid lightgrey;
+    background-color: white;
+    padding: 21px;
+    width: 100%;
+    border-radius: 12px;
+}
+
+.quick-actions .actions{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-overview{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 21px;
+    border: 1px solid lightgrey;
+    background-color: white;
+    padding: 21px;
+    width: 100%;
+    border-radius: 12px;
+}
+.admin-overview .items-container{
+    display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+
+.items-container .overview-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Tablet: 2 per row */
+@media (max-width: 1193px) {
+  .card {
+    flex: 1 1 calc(50% - 21px);
+  }
+}
+
+@media (max-width: 700px){
+    .bottom-container{
+        flex-direction: column;
+    }
+    .invoices{
+        width: 100%;
+    }
+    .quick-actions{
+        width: 100%;
+    }
+    .admin-overview{
+        width: 100%;
+    }
+}
+
+/* Mobile: 1 per row */
+@media (max-width: 600px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+  .card {
+    flex: 1 1 100%;
+  }
+}
+
+.view-all{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border: 1px solid lightgrey;
+    cursor: pointer;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 12px;
+    transition: background-color 0.2s ease-in-out;
+    /* word-wrap: normal; */
+    white-space: nowrap;
+}
+.view-all:hover{
+    background-color: #F3F3F5;
+}
+/* #F3F3F5; */

@@ -1,0 +1,200 @@
+/* Applies border-box globally */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+.login {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(230, 241, 253);
+
+  padding: 0 16px; /* horizontal padding on small screens */
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  background-color: rgb(230, 241, 253);
+  
+  width: 100%;
+  max-width: 500px;
+  padding: 21px;
+  border-radius: 12px;
+}
+
+.info {
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.info .logo {
+  font-size: 50px;
+  background-color: oklch(.511 .262 276.966);
+  width: fit-content;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10%;
+  margin: auto;
+  margin-bottom: 21px;
+}
+
+.tasks {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  
+ width: 100%;
+
+}
+
+.tasks .task {
+  text-align: center;
+  font-size: 13px;
+  margin-bottom: 21px;
+  width: calc(100% / 3 - 10px);
+  white-space: nowrap;
+}
+
+.tasks .task .logo {
+  padding: 5px 47px !important;
+  border-radius: 10px;
+  background-color: white !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 7px;
+}
+
+.demo-credentials {
+  padding: 21px;
+  background-color: white;
+  border-radius: 9px;
+  margin-bottom: 21px;
+  width: 100%;
+}
+
+.demo-credentials p {
+  font-size: 13px;
+  margin-bottom: 21px;
+}
+
+.demo-credentials .role {
+  width: 100%;
+}
+
+.demo-credentials .role .admin {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 4px;
+  background-color: lightgray;
+  border-radius: 6px;
+}
+
+.demo-credentials .role .admin .left p {
+  font-size: 13px;
+  margin-bottom: 0px;
+}
+
+.demo-credentials .role .admin .login-btn {
+  padding: 5px 10px;
+  height: fit-content;
+  border: 1px solid rgb(169, 169, 169);
+  background-color: white;
+  color: black;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.main-form {
+  padding: 21px;
+  width: 100%;
+  background-color: white;
+  border-radius: 9px;
+}
+
+.btns {
+  width: 100%;
+  background-color: lightgray;
+  border-radius: 9px;
+  padding: 3px;
+}
+
+.btns .login-btn {
+  width: 50%;
+  padding: 2px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 7px;
+}
+
+.btns .login-btn.active {
+  background-color: white;
+}
+
+.main-form .inputs {
+  display: flex;
+  flex-direction: column;
+  margin-top: 21px;
+}
+
+.input-login {
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  margin-bottom: 10px;
+  background-color: lightgray;
+}
+
+.submit {
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  margin-top: 6px;
+  color: white;
+  background-color: black;
+}
+
+/* Optional: tweak padding further on very small screens */
+@media (max-width: 480px) {
+  .form {
+    padding: 2px;
+    padding-bottom: 21px;
+  }
+
+  .login {
+    padding: 0 12px;
+  }
+}
+
+@media (max-width: 382px) {
+    .tasks .task .logo{
+        padding: 4px !important;
+        background-color: tomato;
+    }
+    .tasks .task{
+        font-size: 11px;
+    }
+}
