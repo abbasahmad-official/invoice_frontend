@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FileText, Calendar, DollarSign } from 'lucide-react';
 import Button from './Button';
-import '../styles/CreateClientForm.css'; // Reusing same styles
+import '../styles/createClientForm.css'; // Reusing same styles
 import Dropdown from "./Dropdown"
 import { listProducts, listClients, createInvoice, getClientsByUser, getProductsByUser } from "../admin/api"
 import { isAuthenticated } from '../auth/api';
