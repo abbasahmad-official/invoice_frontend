@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {User} from "lucide-react"
 import Button from './Button'
-import "../styles/CreateClientForm.css"
+import "../styles/createClientForm.css"
 import {createClient} from "../admin/api"
 import {isAuthenticated} from "../auth/api"
 
