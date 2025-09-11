@@ -41,7 +41,11 @@ const Dashboard = ({ setActiveSection, setDirectLink }) => {
                     <h2>Welcome back,</h2>
                     <p>Here's what's happening with your invoices today.</p>
                 </div>
-                <Button text="Create Invoice" blackHover={true} />
+                 <div onClick={()=> {setActiveSection("invoices")
+                    setDirectLink("invoices")
+                }} >
+                <Button text="Create Invoice" blackHover={true}/>
+                </div>
             </div>
             <div className="card-container">
                 <Card icon="DollarSign" iconColor="green" title="Total Revenue" number={totalPrice.toFixed(2)} subtitle={`From ${paidRevenue.length} invoices`} dollar={true} />

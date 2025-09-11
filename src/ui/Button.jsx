@@ -1,5 +1,5 @@
 import React from 'react'
-import {Plus, ArrowLeftIcon, LogOut, Save, Trash2, Download} from "lucide-react"
+import {Plus, ArrowLeftIcon, LogOut, Save, Trash2, Download, CreditCard} from "lucide-react"
 import "../styles/parts.css"
 
 const icons = {
@@ -8,7 +8,8 @@ const icons = {
   LogOut,
   Save,
   Trash2,
-  Download
+  Download,
+  CreditCard
 }
 
 const Button = ({noIcon=false ,hover="on" ,text, backgroundColor="black", color="rgb(235, 233, 233)", width="fit-content", border="none", blackHover, icon="Plus"}) => {

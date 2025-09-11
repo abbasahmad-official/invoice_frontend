@@ -4,6 +4,8 @@ import Button from "./Button";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "../styles/invoice-view.css";
+import {createInvoiceSend, sendEmail} from "../admin/api"
+import { isAuthenticated } from "../auth/api";
 
 
 const InvoiceView = ({ setViewInvoice, seeInvoice }) => {
@@ -11,6 +13,7 @@ const InvoiceView = ({ setViewInvoice, seeInvoice }) => {
   useEffect(() => {
     console.log(seeInvoice);
   }, [])
+  const {user, token} = isAuthenticated();
 
   const downloadPDF = async () => {
     const element = invoiceRef.current;
@@ -56,7 +59,14 @@ const {
   total
 } = calculateInvoiceSummary(seeInvoice?.items, seeInvoice?.tax, seeInvoice?.discount);
 
+const sendEmailUser = async () => {
+  //
+  if(seeInvoice && seeInvoice.client.email){
+   const data =  await sendEmail(seeInvoice, token);
+   console.log(data)
 
+  }
+}
   return (
     <div className="invoice-single-page">
       <div className="invoice-header">
@@ -64,10 +74,16 @@ const {
           <Button icon="ArrowLeftIcon" color="black" backgroundColor="transparent" text="Back" />
         </div>
         <h3>Invoice</h3>
+        <div style={{display:"flex", gap:"10px"}}>
+
         <div onClick={downloadPDF}>
           <Button blackHover={true} icon="Download" text="PDF" backgroundColor="#000" color="#fff" />
         </div>
+        <div onClick={sendEmailUser}>
+          <Button blackHover={true} icon="Download" text="Send" backgroundColor="#000" color="#fff" />
+        </div>
       </div>
+        </div>
 
       <div ref={invoiceRef} className="invoice-content">
         <p className="created-date">Created {formatDate(seeInvoice.createdAt)}</p>

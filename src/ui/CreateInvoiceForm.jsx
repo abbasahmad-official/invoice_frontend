@@ -3,7 +3,7 @@ import { FileText, Calendar, DollarSign } from 'lucide-react';
 import Button from './Button';
 import '../styles/createClientForm.css'; // Reusing same styles
 import Dropdown from "./Dropdown"
-import { listProducts, listClients, createInvoice, getClientsByUser, getProductsByUser } from "../admin/api"
+import { createInvoiceSend,listProducts, listClients, createInvoice, getClientsByUser, getProductsByUser } from "../admin/api"
 import { isAuthenticated } from '../auth/api';
 
 const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
@@ -70,7 +70,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
     });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (mode) => {
     const cleanedItems = form.items.filter(
       (item) => item.productId && item.quantity > 0
     );
@@ -88,7 +88,12 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
     }
 
     try {
-      const data = await createInvoice(cleanedForm, token);
+      // const data = await createInvoice(cleanedForm, token);
+      if(mode == "send"){
+        const data = await createInvoiceSend(cleanedForm, token);
+      } else {
+        const data = await createInvoice(cleanedForm, token);
+      }
       onSuccess()
       // console.log("Invoice created:", data);
     } catch (error) {
@@ -329,8 +334,11 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
           <div onClick={() => setCreateInvoice(false)}>
             <Button backgroundColor="white" text="Cancel" color="black" noIcon={true} />
           </div>
-          <div onClick={handleSubmit}>
+          <div onClick={()=>handleSubmit("save")}>
             <Button border="1px solid lightgray" icon="Save" blackHover={true} text="Save Invoice" />
+          </div>
+          <div onClick={()=>handleSubmit("send")}>
+            <Button border="1px solid lightgray" icon="Save" blackHover={true} text="Save Invoice  & Send" />
           </div>
         </div>
           {success && <p style={{ color: "green", marginTop: "10px" }}>{success}</p>}

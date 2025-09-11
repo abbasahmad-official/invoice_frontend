@@ -604,6 +604,53 @@ export const createInvoice = (invoiceData, token) => {
     });
 };
 
+export const createInvoiceSend = (invoiceData, token) => {
+  return fetch(`${API}/invoice/create/send`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(invoiceData),
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        const errorData = await response.json(); // 👈 get real error message
+        console.error('Server responded with error:', errorData);
+        throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error('Error creating invoice:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+export const sendEmail = (invoiceData, token) => {
+  return fetch(`${API}/invoice/email/send`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(invoiceData),
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        const errorData = await response.json(); // 👈 get real error message
+        console.error('Server responded with error:', errorData);
+        throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error('Error creating invoice:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+
 export const getInvoice = (invoiceId, token) => {
   return fetch(`${API}/invoice/view/${invoiceId}`, {
     method: 'GET',
@@ -612,6 +659,26 @@ export const getInvoice = (invoiceId, token) => {
       'Accept': 'application/json',
       Authorization: `Bearer ${token}`
      
+    },
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    }
+    )
+    .catch(error => {
+      console.error('Error removing client:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+export const getInvoiceForClient = (invoiceId) => {
+  return fetch(`${API}/invoice/client/view/${invoiceId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
     },
   })
     .then(response => {
