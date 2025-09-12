@@ -15,6 +15,7 @@ const ClientInvoiceView = () => {
 const [loading, setLoading] = useState(true);
 
 useEffect(() => {
+  console.log(invoiceId)
   const fetchInvoice = async () => {
     try {
       const data = await getInvoiceForClient(invoiceId);
