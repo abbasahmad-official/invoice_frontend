@@ -19,6 +19,7 @@ useEffect(() => {
     try {
       const data = await getInvoiceForClient(invoiceId);
       setInvoice(data);
+      console.log(data)
     } catch (err) {
       console.error("Failed to fetch invoice", err);
     } finally {
