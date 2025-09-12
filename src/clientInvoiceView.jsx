@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { getInvoiceForClient } from "./admin/api";
 
 
-const InvoiceView = () => {
+const ClientInvoiceView = () => {
   const invoiceRef = useRef();
   const {invoiceId} = useParams();
   const [invoice, setInvoice] = useState({});
@@ -232,4 +232,4 @@ const {
   );
 };
 
-export default InvoiceView;
+export default ClientInvoiceView;
