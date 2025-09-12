@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FileText, Calendar, Mail } from "lucide-react";
 import Button from "./Button";
 import jsPDF from "jspdf";
@@ -6,7 +6,7 @@ import html2canvas from "html2canvas";
 import "../styles/invoice-view.css";
 import {createInvoiceSend, sendEmail} from "../admin/api"
 import { isAuthenticated } from "../auth/api";
-
+import Success from "./Success";
 
 const InvoiceView = ({ setViewInvoice, seeInvoice }) => {
   const invoiceRef = useRef();
@@ -14,6 +14,8 @@ const InvoiceView = ({ setViewInvoice, seeInvoice }) => {
     console.log(seeInvoice);
   }, [])
   const {user, token} = isAuthenticated();
+  const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const downloadPDF = async () => {
     const element = invoiceRef.current;
@@ -62,13 +64,29 @@ const {
 const sendEmailUser = async () => {
   //
   if(seeInvoice && seeInvoice.client.email){
-   const data =  await sendEmail(seeInvoice, token);
-   console.log(data)
+    setLoading(true);
+    try{
+       const data =  await sendEmail(seeInvoice, token);
+   if(data.error){
+    console.log(data.error);
+   } else {
+    setLoading(false);
+     setSuccessMessage("Email sent successfully");
+        // Optionally clear after 3s:
+        setTimeout(() => setSuccessMessage(""), 3000);
+   }
+
+    }catch(error){
+      console.log(error)
+    }
+  
+  //  console.log(data)
 
   }
 }
   return (
     <div className="invoice-single-page">
+      {successMessage && <Success message={successMessage}/>}
       <div className="invoice-header">
         <div onClick={() => setViewInvoice(false)}>
           <Button icon="ArrowLeftIcon" color="black" backgroundColor="transparent" text="Back" />
@@ -80,7 +98,7 @@ const sendEmailUser = async () => {
           <Button blackHover={true} icon="Download" text="PDF" backgroundColor="#000" color="#fff" />
         </div>
         <div onClick={sendEmailUser}>
-          <Button blackHover={true} icon="Download" text="Send" backgroundColor="#000" color="#fff" />
+          <Button blackHover={true} icon="Send" text={loading?"Sending...":"Send"} backgroundColor="#000" color="#fff" />
         </div>
       </div>
         </div>

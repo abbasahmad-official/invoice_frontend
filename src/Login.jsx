@@ -12,6 +12,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(()=>{
       isAuthenticated() && navigate("/")
@@ -49,7 +50,7 @@ const Login = () => {
     };
 const handleSubmit = async (e) => {
   e.preventDefault();
-
+  setLoading(true);
   if (mode === "register") {
     try {
       const data = await signup({ name, email, password });
@@ -72,9 +73,11 @@ const handleSubmit = async (e) => {
       if (data.error) {
         console.log(data.error);
       } else {
+        
         authenticate(data, ()=>{
             navigate("/");
         })
+        setLoading(false)
       }
     } catch (err) {
       console.error("Login failed:", err);
@@ -142,7 +145,7 @@ const handleSubmit = async (e) => {
                     <input type="email" placeholder='Email' value={email} onChange={handleChange("email")} className='input-login' />
                     <label htmlFor="password">Password</label>
                     <input type="password" placeholder='Password' value={password} className='input-login' onChange={handleChange("password")} />
-                    <button className="submit">Login</button>
+                    <button className="submit">{loading? "logging...": "Login"}</button>
                 </div>
                 : <div className="inputs">
                     <label htmlFor="Name">Full Name</label>
