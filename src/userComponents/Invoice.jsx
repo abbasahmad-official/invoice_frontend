@@ -94,6 +94,7 @@ const filteredInvoices = invoices
               });
     
     const matchesSearch =
+      invoice?.invoiceNumber?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.client?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.totalAmount?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.invoiceCode.toLowerCase().includes(searchTerm.toLowerCase()) || 
