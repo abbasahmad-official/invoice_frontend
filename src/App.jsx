@@ -7,6 +7,8 @@ import Login from './Login';
 import PrivateRoute from './auth/PrivateRoute';
 import AdminRoute from './auth/AdminRoute';
 import ClientInvoiceView from './clientInvoiceView';
+import InvoiceView from './ui/InvoiceView';
+
 
 function App() {
 
@@ -16,7 +18,7 @@ function App() {
       <Route path='/' element={ <AdminRoute> <AdminHome/> </AdminRoute>}/>
       <Route path='/user' element={ <PrivateRoute> <UserHome/> </PrivateRoute>}/>
       <Route path='/login' element={<Login/>}/>
-      <Route path='/pay/invoice/:invoiceId' element={<ClientInvoiceView/>} />
+      <Route path='/pay/invoice/:invoiceId' element={<InvoiceView/>} />
       </Routes> 
     </BrowserRouter>
   )
