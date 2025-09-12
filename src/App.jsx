@@ -18,7 +18,7 @@ function App() {
       <Route path='/' element={ <AdminRoute> <AdminHome/> </AdminRoute>}/>
       <Route path='/user' element={ <PrivateRoute> <UserHome/> </PrivateRoute>}/>
       <Route path='/login' element={<Login/>}/>
-      <Route path='/pay/invoice/:invoiceId' element={<InvoiceView/>} />
+      <Route path='/pay/invoice' element={<InvoiceView/>} />
       </Routes> 
     </BrowserRouter>
   )
