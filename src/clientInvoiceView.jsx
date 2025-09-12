@@ -12,22 +12,27 @@ const ClientInvoiceView = () => {
   const invoiceRef = useRef();
   const {invoiceId} = useParams();
   const [invoice, setInvoice] = useState({});
-  // console.log(invoiceId)
-
+const [loading, setLoading] = useState(true);
 
 useEffect(() => {
-  if (invoiceId && invoiceId.trim() !== '') {
-    const fetchInvoice = async () => {
+  const fetchInvoice = async () => {
+    try {
       const data = await getInvoiceForClient(invoiceId);
       setInvoice(data);
-    };
+    } catch (err) {
+      console.error("Failed to fetch invoice", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  if (invoiceId && invoiceId.trim() !== '') {
     fetchInvoice();
   }
 }, [invoiceId]);
-  if (!invoice || !invoice.createdAt) {
-    return <p>Loading invoice...</p>;
-  }
+
+if (loading) return <p>Loading invoice...</p>;
+
 
 const downloadPDF = () => {
   const pdf = new jsPDF("p", "mm", "a4");
