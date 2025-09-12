@@ -5,8 +5,13 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "./styles/invoice-view.css";
 import { useParams } from "react-router-dom";
-import { getInvoiceForClient } from "./admin/api";
+import { getInvoiceForClient ,stripePayment } from "./admin/api";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import {stripeKey} from "./config.js"
+import PaymentForm from "./ui/PaymentForm";
 
+const stripePromise = loadStripe(stripeKey);
 
 const ClientInvoiceView = () => {
   const invoiceRef = useRef();
@@ -14,6 +19,8 @@ const ClientInvoiceView = () => {
   const [invoice, setInvoice] = useState({});
 const [loading, setLoading] = useState(true);
 const [status,setStatus] = useState("")
+  // const stripe = useStripe();
+  // const elements = useElements();
 
 useEffect(() => {
   console.log(invoiceId)
@@ -154,6 +161,8 @@ const {
 } = calculateInvoiceSummary(invoice?.items, invoice?.tax, invoice?.discount);
 
 
+
+
   return (
     <div className="invoice-single-page">
       <div className="invoice-header">
@@ -235,9 +244,32 @@ const {
     <span>${total}</span>
   </div>
 </section>
+  <Elements stripe={stripePromise}>
+  
+    {/* <form onSubmit={handlePayment}>
+      <div style={{width:"100%"}} >
+
+      <CardElement options={{
+    style: {
+      base: {
+        color: "black",
+        fontSize: "16px",
+        '::placeholder': {
+          color: '#80878eff',
+        },
+      },
+      invalid: {
+        color: '#fa755a',
+      },
+    },
+  }}/>
+      </div>
 <div style={{textAlign: "center", width: "fit-content", margin: "0 auto" }}>
 {status=="Paid"? <p style={{width:"fitContent", padding:"10px",backgroundColor: "lightGreen", borderRadius:"6px"}}> This Invoice is Paid</p>:<Button text={"Pay Invoice"} blackHover={true} icon="CreditCard"/>}
 </div>
+    </form> */}
+    <PaymentForm  invoice={invoice && invoice} />    
+   </Elements>
       </div>
     </div>
   );

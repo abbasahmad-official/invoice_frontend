@@ -351,6 +351,27 @@ export const createClient = (clientData, token) => {
       throw error; // rethrow so caller can handle
     });
 };
+export const stripePayment = (totalAmount) => {
+  return fetch(`${API}/create-payment-intent`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json' ,
+    },
+   body: JSON.stringify({ amount: totalAmount }),
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    }
+    )
+    .catch(error => {
+      console.error('Error adding client:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
 
 
 export const removeClient = (clientId, token) => {
@@ -564,6 +585,28 @@ export const updateInvoice = (invoiceId, updateInvoice, token) => {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       Authorization:`Bearer ${token}`   
+    },
+    body:JSON.stringify(updateInvoice)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    }
+    )
+    .catch(error => {
+      console.error('Error removing client:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+export const updateInvoiceForUserPay = (invoiceId, updateInvoice) => {
+  return fetch(`${API}/invoice/update/status/${invoiceId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+   
     },
     body:JSON.stringify(updateInvoice)
   })
