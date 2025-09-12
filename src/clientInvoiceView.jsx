@@ -13,12 +13,14 @@ const ClientInvoiceView = () => {
   const {invoiceId} = useParams();
   const [invoice, setInvoice] = useState({});
 const [loading, setLoading] = useState(true);
+const [status,setStatus] = useState("")
 
 useEffect(() => {
   console.log(invoiceId)
   const fetchInvoice = async () => {
     try {
       const data = await getInvoiceForClient(invoiceId);
+      setStatus(data.status);
       setInvoice(data);
       console.log(data)
     } catch (err) {
@@ -162,7 +164,7 @@ const {
         </div>
       </div>
 
-      <div ref={invoiceRef} className="invoice-content">
+     <div ref={invoiceRef} className="invoice-content">
         <p className="created-date">Created {formatDate(invoice.createdAt)}</p>
 
         <section className="details">
@@ -234,7 +236,7 @@ const {
   </div>
 </section>
 <div style={{textAlign: "center", width: "fit-content", margin: "0 auto" }}>
-<Button text={"Pay Invoice"} blackHover={true} icon="CreditCard"/>
+{status=="Paid"? <p style={{width:"fitContent", padding:"10px",backgroundColor: "lightGreen", borderRadius:"6px"}}> This Invoice is Paid</p>:<Button text={"Pay Invoice"} blackHover={true} icon="CreditCard"/>}
 </div>
       </div>
     </div>
