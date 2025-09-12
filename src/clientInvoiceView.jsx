@@ -163,7 +163,7 @@ const {
           </div>
           <div>
             <h4>Issue Date</h4>
-            <p>{formatDate(invoice.createdAt)}</p>
+            <p>{invoice.createdAt && formatDate(invoice.createdAt)}</p>
           </div>
           <div>
             <h4>Due Date</h4>
