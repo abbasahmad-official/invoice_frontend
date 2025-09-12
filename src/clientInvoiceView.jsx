@@ -25,7 +25,9 @@ useEffect(() => {
     fetchInvoice();
   }
 }, [invoiceId]);
-
+  if (!invoice || !invoice.createdAt) {
+    return <p>Loading invoice...</p>;
+  }
 
 const downloadPDF = () => {
   const pdf = new jsPDF("p", "mm", "a4");
