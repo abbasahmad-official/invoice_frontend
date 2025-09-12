@@ -6,10 +6,9 @@ import UserHome from './UserHome';
 import Login from './Login';
 import PrivateRoute from './auth/PrivateRoute';
 import AdminRoute from './auth/AdminRoute';
-import ClientInvoiceView from './ClientInvoiceView';
+import ClientInvoiceView from "./ClientInvoiceView"
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <BrowserRouter>
