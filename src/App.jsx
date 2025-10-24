@@ -9,7 +9,7 @@ import AdminRoute from './auth/AdminRoute';
 import ClientInvoiceView from './clientInvoiceView';
 import InvoiceView from './ui/InvoiceView';
 import SuperAdminHome from './SuperAdminHome';
-import SuperAdminRoute from './auth/superAdminRoute'
+import SuperAdminRoute from './auth/SuperAdminRoute'
 import Suspended from './Suspended';
 
 
