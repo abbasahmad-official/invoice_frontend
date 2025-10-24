@@ -1,39 +1,51 @@
 import React, { useEffect, useState, useRef } from "react";
-import {Navigate, useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   FileText,
-  Users,
   Package,
   UserCog,
   Menu,
   X,
   Car,
-  UserCog2
+  Users2
 } from "lucide-react";
 import "./styles/home.css";
 import Button from "./ui/Button";
 import SearchBar from "./ui/Search";
 import Dropdown from "./ui/Dropdown";
-import Dashboard from "./components/Dashboard";
-import Invoice from "./components/Invoice";
-import Clients from "./components/Clients";
-import Products from "./components/Products";
-import Managers from "./components/Managers";
+import Dashboard from "./userComponents/Dashboard";
+import Invoice from "./userComponents/Invoice";
+import Clients from "./userComponents/Clients";
+import Products from "./userComponents/Products";
+import Users from "./Users";
 import Card from "./ui/Card";
 import { isAuthenticated, signout } from "./auth/api";
 
-
-const AdminHome = () => {
-  const panelRef = useRef(null);
-
-  const {user, token} = isAuthenticated();
-  const [activeSection, setActiveSection] = useState("dashboard");
+const SuperAdminHome = () => {
+const panelRef = useRef(null);
+  const {user, token} =isAuthenticated();
+  const [activeSection, setActiveSection] = useState("users");
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1016);
   const [isPanelOpen, setIsPanelOpen] = useState(!isMobile);
   const [directLink, setDirectLink] = useState("");
+  
+  const navigate = useNavigate()
 
-  const navigate = useNavigate();
+  useEffect(()=>{
+    const handleClickOutside  = (event) => {
+      if(isMobile && isPanelOpen && panelRef.current && panelRef.current.contains(event.target)){
+        setIsPanelOpen(false)
+      }
+    }
+
+   document.addEventListener("mousedown", handleClickOutside);
+
+   return  () => {
+    document.removeEventListener("mousedown", handleClickOutside)
+   }
+
+  },[isMobile, isPanelOpen])
 
   useEffect(() => {
     const handleResize = () => {
@@ -50,42 +62,17 @@ const AdminHome = () => {
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  
-  useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (
-      isMobile &&
-      isPanelOpen &&
-      panelRef.current &&
-      !panelRef.current.contains(event.target)
-    ) {
-      setIsPanelOpen(false);
-    }
-  };
-
-  document.addEventListener("mousedown", handleClickOutside);
-
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, [isMobile, isPanelOpen]);
-
 
   const isActive = (path) => ({
     backgroundColor: activeSection === path ? "#dde2f6ff" : "#ffffff",
   });
 
   const logout = () => {
-    signout( ()=>{
-      navigate("/login")
-    })
-  }
+      signout( ()=>{
+        navigate("/login")
+      })
+    }
 
-  const handleClick = (part) => {
-if(part == "invoices"){
-  console.log(part)
-}
-  }
   return (
     <div className="box">
       {/* Menu icon (mobile only) */}
@@ -117,19 +104,20 @@ if(part == "invoices"){
 
         <div className="side-panel-user gap">
           <div className="user">
-            <UserCog size={50} color="purple"/>
+            <UserCog size={50} color="purple" />
           </div>
-          <div className="info" style={{ textAlign: "left"}}>
+          <div className="info">
             <p>{user.name}</p>
             <p>{user.email}</p>
-            <div onClick={logout} style={{marginTop: "10px",marginLeft:"10px", textAlign: "center"}}>
+             <div onClick={logout} style={{marginTop: "10px",marginLeft:"10px", textAlign: "center"}}>
           <Button  blackHover={true} text={"logout"} icon="LogOut" backgroundColor="black" hover={"off"}/>
             </div>
           </div>
+          
         </div>
 
         <div className="features gap">
-          <div
+          {/* <div
             className="feature gap"
             style={isActive("dashboard")}
             onClick={() => {setActiveSection("dashboard")
@@ -141,8 +129,8 @@ if(part == "invoices"){
               <LayoutDashboard />
             </div>
             <p>Dashboard</p>
-          </div>
-          <div
+          </div> */}
+          {/* <div
             className="feature gap"
             style={isActive("invoices")}
             onClick={() => {setActiveSection("invoices")
@@ -162,7 +150,7 @@ if(part == "invoices"){
             }}
           >
             <div className="icon">
-              <Users />
+              <Users2 />
             </div>
             <p>Clients</p>
           </div>
@@ -177,34 +165,32 @@ if(part == "invoices"){
               <Package />
             </div>
             <p>Products</p>
-          </div>
-
-               <div
+          </div> */}
+          <div
             className="feature gap"
-            style={isActive("managers")}
-            onClick={() => {setActiveSection("managers")
+            style={isActive("users")}
+            onClick={() => {setActiveSection("users")
               setIsPanelOpen(false)
             }}
           >
             <div className="icon">
-              <UserCog2 />
+              <Users2 />
             </div>
-            <p>Managers</p>
+            <p>Admins</p>
           </div>
-
         </div>
       </div>
 
       {/* Main Content */}
       <div className="data-container">
-        {activeSection === "dashboard" &&  <Dashboard setActiveSection={setActiveSection} setDirectLink={setDirectLink}/> }
-        {activeSection === "invoices" &&  <Invoice directLink={directLink} activeSection={activeSection} setDirectLink={setDirectLink}/>}
-        {activeSection === "clients" && <Clients directLink={directLink} activeSection={activeSection} setDirectLink={setDirectLink}/>}
-        {activeSection === "products" && <Products directLink={directLink} activeSection={activeSection} setDirectLink={setDirectLink}/>}
-        {activeSection === "managers" && <Managers directLink={directLink} activeSection={activeSection} setDirectLink={setDirectLink}/>}
+        {/* {activeSection === "dashboard" && <Dashboard directLink={directLink}  setDirectLink={setDirectLink} setActiveSection={setActiveSection} activeSection={activeSection}/>} */}
+        {/* {activeSection === "invoices" && <Invoice directLink={directLink} setDirectLink={setDirectLink} activeSection={activeSection}/>} */}
+        {/* {activeSection === "clients" && <Clients  directLink={directLink} setDirectLink={setDirectLink} activeSection={activeSection}/>} */}
+        {/* {activeSection === "products" && <Products directLink={directLink} setDirectLink={setDirectLink} activeSection={activeSection} />} */}
+        {activeSection === "users" && <Users directLink={directLink} setDirectLink={setDirectLink} activeSection={activeSection} />}
       </div>
     </div>
-  );
-};
+    )
+}
 
-export default AdminHome;
+export default SuperAdminHome

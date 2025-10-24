@@ -20,6 +20,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
     startDate: '',
     endDate: '',
     dueDate: '',
+    organization: '',
     createdBy: `${user._id}`
   });
   const [success, setSuccess] = useState("");
@@ -71,6 +72,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
   };
 
   const handleSubmit = async (mode) => {
+     
     const cleanedItems = form.items.filter(
       (item) => item.productId && item.quantity > 0
     );
@@ -78,6 +80,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
     const cleanedForm = {
       ...form,
       items: cleanedItems,
+      organization: user.organization
     };
 
     // ✅ Remove invalid recurring fields if not applicable

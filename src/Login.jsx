@@ -19,9 +19,11 @@ const Login = () => {
     }, [])
 
     const adminEmail = "admin@gmail.com" 
-    const adminPassword = "admin123/" 
+    const adminPassword = "password1" 
     const userEmail = "user@gmail.com" 
-    const userPassword = "user123/" 
+    const userPassword = "password1" 
+    const superAdminEmail = "superadmin@example.com"
+    const superAdminPassword = "SuperSecurePassword123!"
 
     const handleClick = (mode) => { 
         setMode(mode)
@@ -33,11 +35,14 @@ const Login = () => {
             setEmail(adminEmail)
             setPassword(adminPassword)
             // alert("Admin credentials used")
-        } else {
+        } else if (role == "user") {
             // populate with user credentials
             setEmail(userEmail)
             setPassword(userPassword)
             // alert("User credentials used")
+        } else {
+          setEmail(superAdminEmail)
+            setPassword(superAdminPassword)
         }
     }
  const handleChange = (field) => (event) => {
@@ -53,7 +58,7 @@ const handleSubmit = async (e) => {
   setLoading(true);
   if (mode === "register") {
     try {
-      const data = await signup({ name, email, password });
+      const data = await signup({ name, email, password});
 
       if (data.error) {
         setError(data.error)
@@ -62,6 +67,8 @@ const handleSubmit = async (e) => {
       }
 
       console.log(data);
+      setLoading(false)
+
       setMode("login");
     } catch (err) {
       console.error("Signup failed:", err);
@@ -117,12 +124,20 @@ const handleSubmit = async (e) => {
                 <h4>Demo Credentials</h4>
                 <p>Use these credentials to test different user roles</p>
                 <div className="role">
+                   <div className="admin superAdmin">
+                        <div className="left">
+                            <p>{superAdminEmail}</p>
+                            <p>Super Admin (Full Access)</p>
+                        </div>
+                        <button className="login-btn" onClick={()=> handleDemoUse("superAdmin")} >Use</button>
+                    </div>
+
                     <div className="admin">
                         <div className="left">
                             <p>{adminEmail}</p>
-                            <p>Admin (Full Access)</p>
+                            <p>Admin (Organizational Access)</p>
                         </div>
-                        <button className="login-btn" onClick={()=> handleDemoUse("admin")} >Use</button>
+                        <button  className="login-btn" onClick={()=> handleDemoUse("admin")} >Use</button>
                     </div>
                     <div className="admin user">
                         <div className="left">
@@ -131,6 +146,7 @@ const handleSubmit = async (e) => {
                         </div>
                         <button className="login-btn" onClick={()=> handleDemoUse("user")} >Use</button>
                     </div>
+                   
                 </div>
             </div>
 
@@ -145,7 +161,7 @@ const handleSubmit = async (e) => {
                     <input type="email" placeholder='Email' value={email} onChange={handleChange("email")} className='input-login' />
                     <label htmlFor="password">Password</label>
                     <input type="password" placeholder='Password' value={password} className='input-login' onChange={handleChange("password")} />
-                    <button className="submit">{loading? "logging...": "Login"}</button>
+                    <button style={{cursor: "pointer"}} className="submit">{loading? "logging...": "Login"}</button>
                 </div>
                 : <div className="inputs">
                     <label htmlFor="Name">Full Name</label>

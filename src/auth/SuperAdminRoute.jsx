@@ -11,11 +11,6 @@ const PrivateRoute = ({ children }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (auth.user.role !== "user") {
-    console.log("private route hit")
-    // If the user is not a 'user', redirect to the admin dashboard (or any other page)
-    return <Navigate to="/" state={{ from: location }} replace />;
-  }
 
   // If the user is authenticated as a 'user', render the protected content (children)
   return children;

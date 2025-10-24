@@ -30,7 +30,7 @@ const CreateProductForm = ({onSuccess, setCreateProduct}) => {
   // Submit handler
   const handleSubmit = async () => {
     const data = await createProduct(
-      { name, description, price, createdBy },
+      { name, description, price, createdBy, organization:user.organization },
       token
     );
 

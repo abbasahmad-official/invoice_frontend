@@ -81,7 +81,8 @@ useEffect(() => {
 
 
  useEffect(() => {
-  listInvoices()
+  // console.log(user.organization)
+  listInvoices(user.organization)
     .then((data) => {
       setInvoices(data);
     })

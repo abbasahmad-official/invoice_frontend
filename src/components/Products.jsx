@@ -6,10 +6,12 @@ import TagCard from '../ui/TagCard'
 import {listProducts, getProduct} from "../admin/api"
 import CreateProductForm from '../ui/CreateProductForm'
 import UpdateProductForm from '../ui/UpdateProductForm'
+import { isAuthenticated } from '../auth/api'
 // import '../styles/clients.css'
 
 
 const Products = ({directLink= "", activeSection="", setDirectLink}) => {
+  const {token, user} = isAuthenticated() 
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState();
   const [updateProduct, setUpdateProduct] = useState({});
@@ -28,7 +30,7 @@ const handleSearchChange = (e) => {
 
 
 useEffect(() => {
-  listProducts()
+  listProducts(user.organization)
     .then((data) => { 
       setProducts(data); // update state
       setLength(data.length);

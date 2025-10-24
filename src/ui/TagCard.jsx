@@ -1,11 +1,14 @@
 import React from 'react'
-import {Package, Tag, DollarSign} from 'lucide-react'
+import {Package, Tag, DollarSign, Globe, AlertTriangle, CheckCircle} from 'lucide-react'
 import '../styles/parts.css'
 
 const icons = {
   Package,
   Tag,
-  DollarSign
+  DollarSign,
+  Globe,
+  CheckCircle,
+  AlertTriangle
 };
 
 const TagCard = ({icon, iconColor, tagName, numbers}) => {

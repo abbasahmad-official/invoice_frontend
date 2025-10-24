@@ -30,7 +30,7 @@ const handleSearchChange = (e) => {
 };
 // 
 useEffect(() => {
-  listClients()
+  listClients(user.organization)
     .then((data) => { 
       setClients(data); // update state
     })

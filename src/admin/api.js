@@ -1,7 +1,8 @@
 import {API} from "../config.js";
 
-export const listInvoices = () => {
-  return fetch(`${API}/invoices`, {
+// 
+export const listInvoices = (orgId) => {
+  return fetch(`${API}/invoices?orgId=${orgId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -59,9 +60,9 @@ export const lastInvoicesUser = (userId) => {
       throw error; // rethrow so caller can handle
     });
 };
-
-export const listClients = () => {
-  return fetch(`${API}/clients`, {
+// 
+export const listClients = (orgId) => {
+  return fetch(`${API}/clients?orgId=${orgId}&role=user`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -79,8 +80,8 @@ export const listClients = () => {
       throw error; // rethrow so caller can handle
     });
 };
-export const listProducts = () => {
-  return fetch(`${API}/products`, {
+export const listProducts = (orgId) => {
+  return fetch(`${API}/products?orgId=${orgId}&role=user`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -802,6 +803,184 @@ export const getInvoicesByUser = (userId, token) => {
     })
     .catch(error => {
       console.error('Error fetching products:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+
+// organizations
+export const createOrg = (orgData, token) => {
+  return fetch(`${API}/org/create`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json' ,
+       Authorization: `Bearer ${token}` 
+    },
+    body:JSON.stringify(orgData)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    }
+    )
+    .catch(error => {
+      console.error('Error adding organization:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+
+export const getAllOrganizations = (token) => {
+  return fetch(`${API}/orgs`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch(error => {
+      console.error('Error fetching organizations:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+
+export const getOrganizationsByStatus = (status, token) => {
+  return fetch(`${API}/org/${status}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch(error => {
+      console.error('Error fetching organizations by status:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+
+export const removeOrg = (orgId, token) => {
+  return fetch(`${API}/org/remove/${orgId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json' 
+       
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    }
+    )
+    .catch(error => {
+      console.error('Error removing organization:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+
+export const updateOrg = (orgId, orgData) => {
+  return fetch(`${API}/org/update/${orgId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'    
+    },
+    body:JSON.stringify(orgData)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    }
+    )
+    .catch(error => {
+      console.error('Error updating organization:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+
+// users
+
+export const getManagers = (userId, token) => {
+  return fetch(`${API}/managers?userId=${userId}&role=user`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      Authorization: `Bearer ${token}`   
+    },
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    }
+    )
+    .catch(error => {
+      console.error('Error getting user:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+
+export const updateUser = (updatedUser, userId, token) => {
+  return fetch(`${API}/user/update?userId=${userId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      Authorization: `Bearer ${token}`   
+    },
+    body: JSON.stringify(updatedUser)
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    }
+    )
+    .catch(error => {
+      console.error('Error getting user:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+
+export const getManagersByStatus = (status, orgId, token) => {
+  return fetch(`${API}/managers/status/${status}?orgId=${orgId}&role=user`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .catch(error => {
+      console.error('Error fetching Managers by status:', error);
       throw error; // rethrow so caller can handle
     });
 };

@@ -66,7 +66,7 @@ const Dashboard = ({ setActiveSection, setDirectLink }) => {
                         {lastThreeInvoices.map((invoice, index)=> <div  key={index} className="recent-invoice" >
                             <div className="top">
                                 <p>{invoice._id}</p>
-                                <p>{invoice.client.name}</p>
+                                <p>{invoice.client &&  invoice.client.name }</p>
                             </div>
                             <div className="middle">
 
