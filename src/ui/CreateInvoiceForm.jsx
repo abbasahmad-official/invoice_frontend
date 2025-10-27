@@ -130,7 +130,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const data = await (user.role == "admin" ? listProducts() : getProductsByUser(user._id, token))
+      const data = await (user.role == "admin" ? listProducts(user.organization) : getProductsByUser(user._id, token))
       if (data.error) {
         console.log("error fetching products", data.error);
       } else {
@@ -140,7 +140,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
     }
 
     const fetchClients = async () => {
-      const data = await (user.role == "admin" ? listClients() : getClientsByUser(user._id, token))
+      const data = await (user.role == "admin" ? listClients(user.organization) : getClientsByUser(user._id, token))
       if (data.error) {
         console.log("error fetching products", data.error);
       } else {
@@ -148,7 +148,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
         setClients(data)
       }
     }
-
+// console.log(user.organization)
     fetchClients()
     fetchProducts()
 

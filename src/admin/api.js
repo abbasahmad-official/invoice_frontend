@@ -21,8 +21,8 @@ export const listInvoices = (orgId) => {
     });
 };
 
-export const lastInvoices = () => {
-  return fetch(`${API}/invoices/last`, {
+export const lastInvoices = (orgId) => {
+  return fetch(`${API}/invoices/last?orgId=${orgId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -101,8 +101,8 @@ export const listProducts = (orgId) => {
 };
 
 // dashboard stats
-export const totalRevenue = () => {
-  return fetch(`${API}/invoices/paid`, {
+export const totalRevenue = (orgId) => {
+  return fetch(`${API}/invoices/paid?orgId=${orgId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -163,8 +163,8 @@ export const pendingRevenueByUser = (userId) => {
 
 
 
-export const pendingRevenue = () => {
-  return fetch(`${API}/invoices/pending`, {
+export const pendingRevenue = (orgId) => {
+  return fetch(`${API}/invoices/pending?orgId=${orgId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -183,8 +183,8 @@ export const pendingRevenue = () => {
     });
 };
 
-export const overdueCount = () => {
-  return fetch(`${API}/invoices/overdue`, {
+export const overdueCount = (orgId) => {
+  return fetch(`${API}/invoices/overdue?orgId=${orgId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -223,8 +223,8 @@ export const overdueUserCount = (userId) => {
 };
 
 
-export const totalClientsNumbers = () => {
-  return fetch(`${API}/clients/count`, {
+export const totalClientsNumbers = (orgId) => {
+  return fetch(`${API}/clients/count?orgId=${orgId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -265,8 +265,8 @@ export const totalClientsNumbersByUser = (userId) => {
     });
 };
 
-export const allInvoicesCount = () => {
-  return fetch(`${API}/invoices/count`, {
+export const allInvoicesCount = (orgId) => {
+  return fetch(`${API}/invoices/count?orgId=${orgId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -307,8 +307,8 @@ export const allInvoicesCountByUser = (userId) => {
     });
 };
 
-export const allUsersCount = () => {
-  return fetch(`${API}/users/count`, {
+export const allUsersCount = (orgId) => {
+  return fetch(`${API}/users/count?orgId=${orgId}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

@@ -3,13 +3,15 @@ import Button from '../ui/Button'
 import '../styles/dashboard.css'
 import { ArrowRight } from "lucide-react"
 import Card from '../ui/Card'
+import {isAuthenticated} from "../auth/api" 
 import { totalRevenue,  lastInvoices, pendingRevenue, totalClientsNumbers, overdueCount, allInvoicesCount, allUsersCount } from "../admin/api"
 const Dashboard = ({ setActiveSection, setDirectLink }) => {
+    const {user, token} = isAuthenticated()
     const [paidRevenue, setPaidRevenue] = useState([]);
     const [remainingRevenue, setRemainingRevenue] = useState([]);
     const [clients, setClients] = useState();
     const [invoices, setInvoices] = useState();
-    const [users, setUsers] = useState();
+    const [managers, setManagers] = useState();
     const [overdue, setOverdue] = useState()
     const [lastThreeInvoices, setLastThreeInvoices] = useState([]);
     // const [totalClients, setTotalClients] = useState(3);
@@ -17,13 +19,13 @@ const Dashboard = ({ setActiveSection, setDirectLink }) => {
 
     useEffect(() => {
         //     // Fetch and update the state with real data from an API or database
-        totalRevenue().then(data => setPaidRevenue(data)).catch(error => console.error(error));
-        pendingRevenue().then(data => setRemainingRevenue(data)).catch(error => console.error(error));
-        totalClientsNumbers().then(data => setClients(data.count)).catch(error => console.error(error));
-        allInvoicesCount().then(data => setInvoices(data.count)).catch(error => console.error(error));
-        allUsersCount().then(data => setUsers(data.count)).catch(error => console.error(error));
-        overdueCount().then(data => setOverdue(data)).catch(error => console.error(error));
-        lastInvoices().then(data => setLastThreeInvoices(data)).catch(error => console.error(error));
+        totalRevenue(user.organization).then(data => setPaidRevenue(data)).catch(error => console.error(error));
+        pendingRevenue(user.organization).then(data => setRemainingRevenue(data)).catch(error => console.error(error));
+        totalClientsNumbers(user.organization).then(data => setClients(data.count)).catch(error => console.error(error));
+        allInvoicesCount(user.organization).then(data => setInvoices(data.count)).catch(error => console.error(error));
+        allUsersCount(user.organization).then(data => setManagers(data.count-1)).catch(error => console.error(error));
+        overdueCount(user.organization).then(data => setOverdue(data)).catch(error => console.error(error));
+        lastInvoices(user.organization).then(data => setLastThreeInvoices(data)).catch(error => console.error(error));
 
     }
         , []);
@@ -65,8 +67,8 @@ const Dashboard = ({ setActiveSection, setDirectLink }) => {
                     <div className="recent-invoices-container" style={{gap:"10px"}}>
                         {lastThreeInvoices.map((invoice, index)=> <div  key={index} className="recent-invoice" >
                             <div className="top">
-                                <p>{invoice._id}</p>
-                                <p>{invoice.client &&  invoice.client.name }</p>
+                                {/* <p>{invoice._id}</p> */}
+                                <p>{invoice.client?  invoice.client.name: "No Name" }</p>
                             </div>
                             <div className="middle">
 
@@ -111,8 +113,8 @@ const Dashboard = ({ setActiveSection, setDirectLink }) => {
                         </div>
                         <div className="items-container">
                             <div className="overview-item">
-                                <p>Total Users</p>
-                                <h3>{users}</h3>
+                                <p>Total Managers</p>
+                                <h3>{managers}</h3>
                             </div>
                             <div className="overview-item">
                                 <p>All Invoices</p>
