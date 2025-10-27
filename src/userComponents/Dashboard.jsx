@@ -4,7 +4,7 @@ import '../styles/dashboard.css'
 import {ArrowRight} from "lucide-react"
 import Card from '../ui/Card'
 import {isAuthenticated} from "../auth/api"
-import {overdueUserCount ,lastInvoicesUser ,totalRevenueByUser, pendingRevenueByUser, totalClientsNumbersByUser, allInvoicesCountByUser, allUsersCount} from "../admin/api"
+import {overdueUserCount ,lastInvoicesUser ,totalRevenueByUser, pendingRevenueByUser, totalClientsNumbersByUser, allInvoicesCountByUser} from "../admin/api"
 const Dashboard = ({setActiveSection, setDirectLink}) => {
         const {user, token} = isAuthenticated();
 
@@ -17,15 +17,13 @@ const Dashboard = ({setActiveSection, setDirectLink}) => {
 
     // const [totalClients, setTotalClients] = useState(3);
     const [overdue, setOverdue] = useState();
-
+// 
     useEffect(() => {
     //     // Fetch and update the state with real data from an API or database
         totalRevenueByUser(user._id).then(data => setPaidRevenue(data)).catch(error => console.error(error));
         pendingRevenueByUser(user._id).then(data => setRemainingRevenue(data)).catch(error => console.error(error));
         totalClientsNumbersByUser(user._id).then(data => setClients(data.count)).catch(error => console.error(error));
         allInvoicesCountByUser(user._id).then(data => setInvoices(data.count)).catch(error => console.error(error));
-    
-        allUsersCount().then(data => setUsers(data.count)).catch(error => console.error(error));
         overdueUserCount(user._id).then(data => setOverdue(data)).catch(error => console.error(error));
         lastInvoicesUser(user._id).then(data => setLastInvoices(data)).catch(error => console.error(error));
       
@@ -69,7 +67,7 @@ const Dashboard = ({setActiveSection, setDirectLink}) => {
             <div className="recent-invoices-container">
            {lastInvoices.map((invoice, i)=>  <div key={i} className="recent-invoice">
                 <div className="top">
-                    <p>{invoice._id}</p>
+                    {/* <p>{invoice._id}</p> */}
                     <p>{invoice.client?.name}</p>
                 </div>
                 <div className="middle">

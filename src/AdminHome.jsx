@@ -76,7 +76,7 @@ const AdminHome = () => {
   });
 
   const logout = () => {
-    signout( ()=>{
+    signout(token ,()=>{
       navigate("/login")
     })
   }

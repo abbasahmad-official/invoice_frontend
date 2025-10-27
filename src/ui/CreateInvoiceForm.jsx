@@ -134,7 +134,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
       if (data.error) {
         console.log("error fetching products", data.error);
       } else {
-        console.log(data)
+        // console.log(data)
         setProducts(data)
       }
     }
@@ -144,7 +144,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
       if (data.error) {
         console.log("error fetching products", data.error);
       } else {
-        console.log(data)
+        // console.log(data)
         setClients(data)
       }
     }

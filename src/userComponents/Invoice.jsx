@@ -64,12 +64,12 @@ useEffect(() => {
 
 const handleSearchChange = (e) => {
   setSearchTerm(e.target.value);
-  console.log(e.target.value)
+  // console.log(e.target.value)
 };
 
 useEffect(()=>{
   const invoiceGetter = async() => {
- if(!viewInvoiceId.trim()) return ""
+ if(!viewInvoiceId?.trim()) return ""
    else{
     const view = await getInvoice(viewInvoiceId, token);
     setInvoice(view);

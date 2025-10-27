@@ -33,9 +33,7 @@ export const signin = (signinData) => {
         body: JSON.stringify(signinData)
       })
         .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
+         
           return response.json();
         })
         .catch(error => {
@@ -52,7 +50,7 @@ export const authenticate = (data, next) => {
     }
   }
 
-  export const signout = ( next) => {
+  export const signout = (token ,next) => {
   if (typeof window !== "undefined") {
     // Remove token from localStorage (client-side logout)
     localStorage.removeItem("jwt");
@@ -60,11 +58,15 @@ export const authenticate = (data, next) => {
     // Call backend to handle server-side logout
     return fetch(`${API}/signout`, {
       method: "POST",
+       headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,  // ✅ correct format
+  },
      
 
     })
       .then(response => {
-        console.log("Signout response:", response);
+        // console.log("Signout response:", response);
         next(); // Now call the callback after server response
       })
       .catch(err => console.log("Signout error:", err));

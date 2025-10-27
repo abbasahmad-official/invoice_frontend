@@ -68,7 +68,7 @@ const panelRef = useRef(null);
   });
 
   const logout = () => {
-      signout( ()=>{
+      signout(token ,()=>{
         navigate("/login")
       })
     }

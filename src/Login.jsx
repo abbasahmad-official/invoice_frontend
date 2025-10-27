@@ -46,6 +46,7 @@ const Login = () => {
         }
     }
  const handleChange = (field) => (event) => {
+  setError("")
     const value = event.target.value;
     if(field === "email") setEmail(value);
     else if(field === "password") setPassword(value);
@@ -56,29 +57,33 @@ const Login = () => {
 const handleSubmit = async (e) => {
   e.preventDefault();
   setLoading(true);
-  if (mode === "register") {
-    try {
-      const data = await signup({ name, email, password});
+  // if (mode === "register") {
+  //   try {
+  //     const data = await signup({ name, email, password});
 
-      if (data.error) {
-        setError(data.error)
-        // console.log(data.error);
-        return;
-      }
+  //     if (data.error) {
+  //       setError(data.error)
+  //       // console.log(data.error);
+  //       return;
+  //     }
 
-      console.log(data);
-      setLoading(false)
+  //     console.log(data);
+  //     setLoading(false)
 
-      setMode("login");
-    } catch (err) {
-      console.error("Signup failed:", err);
-    }
-  } else if (mode === "login") {
+  //     setMode("login");
+  //   } catch (err) {
+  //     console.error("Signup failed:", err);
+  //   }
+  // } 
+  // else
+     if (mode === "login") {
     try {
       const data = await signin({ email, password });
 
       if (data.error) {
-        console.log(data.error);
+        // console.log(data.error);
+        setError(data.error)
+        setLoading(false)
       } else {
         
         authenticate(data, ()=>{
@@ -91,6 +96,14 @@ const handleSubmit = async (e) => {
     }
   }
 };
+
+const showError = () => {
+  if (!error) return ""
+
+return <div className='tasks' style={{background: "#FF7081", padding:"10px", borderRadius:"10px"}}>
+   <p style={{margin: "0 auto"}}>{error}</p>
+</div>
+}
 
   return (
     <div className='login'>
@@ -120,7 +133,7 @@ const handleSubmit = async (e) => {
                 </div>
             </div>
 
-            <div className="demo-credentials">
+            <div className="demo-credentials" style={{marginBottom:error? "0px": null}}>
                 <h4>Demo Credentials</h4>
                 <p>Use these credentials to test different user roles</p>
                 <div className="role">
@@ -149,21 +162,23 @@ const handleSubmit = async (e) => {
                    
                 </div>
             </div>
-
+              {showError()}
             <div className="main-form">
-                <div className="btns">
+                {/* <div className="btns">
                     <button className={`login-btn ${mode == "login" && "active"}`} onClick={()=> handleClick("login")}  >Login</button>
                     <button className={`register-btn login-btn ${mode == "register" && "active"}`} onClick={()=> handleClick("register")} >Register</button>
-                </div>
+                </div> */}
                 <form onSubmit={handleSubmit}>
-                {mode==="login" ? <div className="inputs">
+                {/* {mode==="login" ? */}
+                 <div className="inputs">
                     <label htmlFor="email">Email</label>
                     <input type="email" placeholder='Email' value={email} onChange={handleChange("email")} className='input-login' />
                     <label htmlFor="password">Password</label>
                     <input type="password" placeholder='Password' value={password} className='input-login' onChange={handleChange("password")} />
                     <button style={{cursor: "pointer"}} className="submit">{loading? "logging...": "Login"}</button>
                 </div>
-                : <div className="inputs">
+                {/* :  */}
+                {/* <div className="inputs">
                     <label htmlFor="Name">Full Name</label>
                     <input type="text" placeholder='Name' value={name} onChange={handleChange("name")} className='input-login'  />
                     <label htmlFor="email">Email</label>
@@ -171,8 +186,8 @@ const handleSubmit = async (e) => {
                     <label htmlFor="password">Password</label>
                     <input type="password" placeholder='Password'value={password} className='input-login' onChange={handleChange("password")}  />
                     <button className="submit">Register</button>
-                </div>
-                }
+                </div> */}
+                {/* } */}
                 </form>
             </div>
         </div>
