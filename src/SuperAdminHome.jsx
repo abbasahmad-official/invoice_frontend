@@ -8,7 +8,9 @@ import {
   Menu,
   X,
   Car,
-  Users2
+  Users2,
+  Settings2,
+  Settings
 } from "lucide-react";
 import "./styles/home.css";
 import Button from "./ui/Button";
@@ -21,6 +23,9 @@ import Products from "./userComponents/Products";
 import Users from "./Users";
 import Card from "./ui/Card";
 import { isAuthenticated, signout } from "./auth/api";
+import {getLogo} from "./admin/api"
+import SuperAdminSetting from "./SuperAdminSetting";
+import { API } from "./config";
 
 const SuperAdminHome = () => {
 const panelRef = useRef(null);
@@ -29,7 +34,8 @@ const panelRef = useRef(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1016);
   const [isPanelOpen, setIsPanelOpen] = useState(!isMobile);
   const [directLink, setDirectLink] = useState("");
-  
+  const [logo, setLogo] = useState({})
+
   const navigate = useNavigate()
 
   useEffect(()=>{
@@ -63,6 +69,28 @@ const panelRef = useRef(null);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(()=>{
+fetchLogo()
+  },[])
+
+const fetchLogo = async()=>{
+  const data  = await getLogo(user._id, token)
+  if(data.error && data.status== 404){
+    console.log(data.error)
+  } else {
+    // console.log(data)
+    setLogo(data)
+  }
+}
+
+const refreshLogo = async () => {
+  const data = await getLogo(user._id, token);
+  if (!data.error) {
+    setLogo(data);
+  }
+};
+
+
   const isActive = (path) => ({
     backgroundColor: activeSection === path ? "#dde2f6ff" : "#ffffff",
   });
@@ -74,7 +102,7 @@ const panelRef = useRef(null);
     }
 
   return (
-    <div className="box">
+    <div className="box" >
       {/* Menu icon (mobile only) */}
       {isMobile && (
         <div className="menu-icon" onClick={() => setIsPanelOpen(true)}>
@@ -88,13 +116,13 @@ const panelRef = useRef(null);
       )}
 
       {/* Sidebar */}
-      <div ref={panelRef} className={`side-panel ${isPanelOpen ? "show" : ""}`}>
+      <div style={{width:"fit-content"}} ref={panelRef} className={`side-panel ${isPanelOpen ? "show" : ""}`}>
         <div className="side-panel-header gap">
           <div className="logo">
-            <img src="./logo-invoice.png" alt="my logo" width={50}/>
+            <img src={logo?.path ? API + logo.path : "./logo-invoice.png"} alt="my logo" width={50}/>
           </div>
           <div className="info">
-            <p>SimplyBill</p>
+            <p>{logo?.companyName || "SimplyBill"}</p>
             <p>Invoice Management</p>
           </div>
           {isMobile && <div className="close" onClick={() => setIsPanelOpen(false)}>
@@ -117,55 +145,7 @@ const panelRef = useRef(null);
         </div>
 
         <div className="features gap">
-          {/* <div
-            className="feature gap"
-            style={isActive("dashboard")}
-            onClick={() => {setActiveSection("dashboard")
-              setIsPanelOpen(false)
-            }
-            }
-          >
-            <div className="icon">
-              <LayoutDashboard />
-            </div>
-            <p>Dashboard</p>
-          </div> */}
-          {/* <div
-            className="feature gap"
-            style={isActive("invoices")}
-            onClick={() => {setActiveSection("invoices")
-              setIsPanelOpen(false)
-            }}
-          >
-            <div className="icon">
-              <FileText />
-            </div>
-            <p>Invoices</p>
-          </div>
-          <div
-            className="feature gap"
-            style={isActive("clients")}
-            onClick={() => {setActiveSection("clients")
-              setIsPanelOpen(false)
-            }}
-          >
-            <div className="icon">
-              <Users2 />
-            </div>
-            <p>Clients</p>
-          </div>
-          <div
-            className="feature gap"
-            style={isActive("products")}
-            onClick={() => {setActiveSection("products")
-              setIsPanelOpen(false)
-            }}
-          >
-            <div className="icon">
-              <Package />
-            </div>
-            <p>Products</p>
-          </div> */}
+         
           <div
             className="feature gap"
             style={isActive("users")}
@@ -178,6 +158,21 @@ const panelRef = useRef(null);
             </div>
             <p>Admins</p>
           </div>
+        
+          <div
+            className="feature gap"
+            style={isActive("setting")}
+            onClick={() => {setActiveSection("setting")
+              setIsPanelOpen(false)
+            }}
+          >
+            <div className="icon">
+              <Settings />
+            </div>
+            <p>Settings</p>
+          </div>
+
+
         </div>
       </div>
 
@@ -188,6 +183,7 @@ const panelRef = useRef(null);
         {/* {activeSection === "clients" && <Clients  directLink={directLink} setDirectLink={setDirectLink} activeSection={activeSection}/>} */}
         {/* {activeSection === "products" && <Products directLink={directLink} setDirectLink={setDirectLink} activeSection={activeSection} />} */}
         {activeSection === "users" && <Users directLink={directLink} setDirectLink={setDirectLink} activeSection={activeSection} />}
+        {activeSection === "setting" && <SuperAdminSetting directLink={directLink} setDirectLink={setDirectLink} activeSection={activeSection} refreshLogo={refreshLogo} />}
       </div>
     </div>
     )

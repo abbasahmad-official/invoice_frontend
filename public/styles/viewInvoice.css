@@ -1,0 +1,154 @@
+.invoice-content{
+  padding: 0px;
+  background-color: #ffcf25;
+  width: 100%;
+}
+
+
+.top-buttons {
+    /* background-color: #1a7f37; */
+  display: flex;
+  justify-content: space-between;
+  align-items: right;
+  margin-bottom: 25px;
+}
+
+
+
+.invoice-modern-wrapper {
+  display: flex;
+  background: #f7f9fc;
+  padding: 30px;
+  min-height: 100%;
+}
+
+.invoice-template-wrapper {
+  width: 100%;
+  margin: auto;
+  background: #fff;
+  border: 2px solid #e5e5e5;
+  padding-bottom: 30px;
+  font-family: "Arial", sans-serif;
+}
+
+/* HEADER */
+.inv-header {
+  background: #0f2e62;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  padding: 35px 40px;
+}
+
+.inv-title {
+  color: #ffcf25;
+  font-size: 42px;
+}
+
+.inv-to-title {
+  color: #ffcf25;
+  margin-bottom: 3px;
+  font-weight: 600;
+}
+
+.inv-client-name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* ADDRESS BAR */
+.inv-address-bar {
+  background: #ffcf25;
+  color: #0f2e62;
+  font-size: 17px;
+  padding: 14px 25px;
+  font-weight: 600;
+  display: flex;
+  gap: 10px;
+}
+
+/* CONTACT + PAYMENT INFO */
+.inv-info-block {
+  display: flex;
+  justify-content: space-between;
+  padding: 25px 40px;
+}
+
+.inv-info-block p {
+  margin: 4px 0;
+  font-size: 15px;
+}
+
+/* TABLE */
+.inv-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inv-table th {
+  background: #0f2e62;
+  color: white;
+  padding: 12px;
+}
+
+.inv-table td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  /* border: 1px solid; */
+  text-align: center;
+  
+  
+}
+
+/* SUMMARY SECTION */
+.inv-bottom-section {
+  display: flex;
+  justify-content: space-between;
+  padding: 35px 40px;
+  /* padding-top: 70px; */
+  margin-top: 40px;
+}
+.inv-terms{
+  width: 270px;
+  /* overflow: hidden; */
+}
+
+.inv-summary {
+  width: 35%;
+}
+
+.inv-summary p {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+
+.inv-total {
+  background: #0f2e62;
+  color: white;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* SIGNATURE */
+.inv-sign {
+  padding: 40px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.inv-sign-line {
+  width: 200px;
+  height: 2px;
+  background: black;
+}
+
+.inv-sign-name {
+  text-align: center;
+  font-weight: 600;
+  margin-top: 5px;
+}
+

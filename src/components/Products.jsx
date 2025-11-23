@@ -3,10 +3,11 @@ import Button from '../ui/Button'
 import SearchBar from '../ui/Search'
 import Table from '../ui/Table'
 import TagCard from '../ui/TagCard'
-import {listProducts, getProduct} from "../admin/api"
+import {listProducts, getProduct, convertCurrency} from "../admin/api"
 import CreateProductForm from '../ui/CreateProductForm'
 import UpdateProductForm from '../ui/UpdateProductForm'
 import { isAuthenticated } from '../auth/api'
+import { useCurrency } from '../CurrencyContext'
 // import '../styles/clients.css'
 
 
@@ -19,9 +20,10 @@ const Products = ({directLink= "", activeSection="", setDirectLink}) => {
   const [error, setError] = useState(false);
 const [loading, setLoading] = useState(true); 
 const [createProduct, setCreateProduct] = useState(false);
-const tableHeadNames = ["Product/Service", "Category", "Price", "Unit", "Added", "Actions"];  
+const tableHeadNames = ["Product/Service", "Price", "Added", "Actions"];  
 const [searchTerm, setSearchTerm] = useState('');
 const [shouldReloadProducts, setShouldReloadProducts] = useState(false)
+const {currency, setCurrencyCode} = useCurrency()
 
 const handleSearchChange = (e) => {
   setSearchTerm(e.target.value);
@@ -30,6 +32,7 @@ const handleSearchChange = (e) => {
 
 
 useEffect(() => {
+  // setCurrencyCode(user?.currency.code)
   listProducts(user.organization)
     .then((data) => { 
       setProducts(data); // update state
@@ -66,11 +69,15 @@ useEffect(() => {
 }, [updateProduct]);
 
 
-const filteredProducts = products.filter((product) =>
-  product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  product.price?.toString().toLowerCase().includes(searchTerm.toLowerCase()) 
-
+const filteredProducts = products.filter((product) =>{
+  const convertedPrice = product.price * currency
+  return(
+    product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    convertedPrice?.toFixed(2).toString().toLowerCase().includes(searchTerm.toLowerCase()) 
 );
+}
+);
+
 
 
 
@@ -92,10 +99,11 @@ return (
     </div>
     <div className="tag-card-container">
     <TagCard icon="Package" iconColor="blue" tagName="Total Products" numbers={length}/>
-    <TagCard icon="Tag" iconColor="green" tagName={"Categories"} numbers={0} />
-    <TagCard icon="DollarSign" iconColor="purple" tagName={"Avg. Price"} numbers={avgPrice} />
+    {/* <TagCard icon="Tag" iconColor="green" tagName={"Categories"} numbers={0} /> */}
+    <TagCard icon2Color="purple" icon2={user?.currency.symbol} icon="DollarSign" iconColor="purple" tagName={"Avg. Price"} numbers={(avgPrice * currency).toFixed(2)} />
 
     </div>
+      {/* <button onClick={currencyChange}>get exchange</button> */}
     <SearchBar value={searchTerm} onChange={handleSearchChange}/>
     <Table onSuccess={()=>setShouldReloadProducts(prev => !prev)} setUpdateProduct={setUpdateProduct} header='All Products' subHeader='Your products and services catalog' products={filteredProducts} tableHeadNames={tableHeadNames} />
     </div>}

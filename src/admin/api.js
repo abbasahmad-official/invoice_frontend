@@ -1,3 +1,4 @@
+import { Await } from "react-router-dom";
 import {API} from "../config.js";
 
 // 
@@ -57,6 +58,22 @@ export const lastInvoicesUser = (userId) => {
     })
     .catch(error => {
       console.error('Error fetching last three invoices By User:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+export const listClientInvoicesCount = (orgId) => {
+  return fetch(`${API}/clients/invoices/count?orgId=${orgId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  })
+    .then(response => {
+      return response.json();
+    })
+    .catch(error => {
+      console.error('Error Counting invoices By Client:', error);
       throw error; // rethrow so caller can handle
     });
 };
@@ -341,9 +358,7 @@ export const createClient = (clientData, token) => {
     body:JSON.stringify(clientData)
   })
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      
       return response.json();
     }
     )
@@ -407,9 +422,7 @@ export const updateClient = (clientId, updateClient, token) => {
     body:JSON.stringify(updateClient)
   })
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      
       return response.json();
     }
     )
@@ -477,9 +490,7 @@ export const createProduct = (productData, token) => {
     body:JSON.stringify(productData)
   })
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+     
       return response.json();
     }
     )
@@ -543,9 +554,7 @@ export const updateProduct = (productId, updateProduct, token) => {
     body:JSON.stringify(updateProduct)
   })
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      
       return response.json();
     }
     )
@@ -590,9 +599,7 @@ export const updateInvoice = (invoiceId, updateInvoice, token) => {
     body:JSON.stringify(updateInvoice)
   })
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+     
       return response.json();
     }
     )
@@ -612,9 +619,7 @@ export const updateInvoiceForUserPay = (invoiceId, updateInvoice) => {
     body:JSON.stringify(updateInvoice)
   })
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+    
       return response.json();
     }
     )
@@ -635,11 +640,7 @@ export const createInvoice = (invoiceData, token) => {
     body: JSON.stringify(invoiceData),
   })
     .then(async (response) => {
-      if (!response.ok) {
-        const errorData = await response.json(); // 👈 get real error message
-        console.error('Server responded with error:', errorData);
-        throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
-      }
+      
       return response.json();
     })
     .catch((error) => {
@@ -659,11 +660,7 @@ export const createInvoiceSend = (invoiceData, token) => {
     body: JSON.stringify(invoiceData),
   })
     .then(async (response) => {
-      if (!response.ok) {
-        const errorData = await response.json(); // 👈 get real error message
-        console.error('Server responded with error:', errorData);
-        throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
-      }
+     
       return response.json();
     })
     .catch((error) => {
@@ -763,6 +760,23 @@ export const getClientsByUser = (userId, token) => {
       throw error; // rethrow so caller can handle
     });
 };
+export const getClientsByUserAndCount = (userId, token) => {
+  return fetch(`${API}/clients/user/count/${userId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(response => {
+      return response.json();
+    })
+    .catch(error => {
+      console.error('Error fetching clients:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
 
 
 export const getProductsByUser = (userId, token) => {
@@ -819,9 +833,7 @@ export const createOrg = (orgData, token) => {
     body:JSON.stringify(orgData)
   })
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+     
       return response.json();
     }
     )
@@ -895,6 +907,29 @@ export const removeOrg = (orgId, token) => {
     });
 };
 
+export const removeManager = (managerId, token) => {
+  return fetch(`${API}/manager/remove/${managerId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      Authorization: `Bearer ${token}`
+       
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    }
+    )
+    .catch(error => {
+      console.error('Error removing organization:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+
 export const updateOrg = (orgId, orgData) => {
   return fetch(`${API}/org/update/${orgId}`, {
     method: 'PUT',
@@ -905,9 +940,7 @@ export const updateOrg = (orgId, orgData) => {
     body:JSON.stringify(orgData)
   })
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+     
       return response.json();
     }
     )
@@ -952,9 +985,7 @@ export const updateUser = (updatedUser, userId, token) => {
     body: JSON.stringify(updatedUser)
   })
     .then(response => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+    
       return response.json();
     }
     )
@@ -983,4 +1014,231 @@ export const getManagersByStatus = (status, orgId, token) => {
       console.error('Error fetching Managers by status:', error);
       throw error; // rethrow so caller can handle
     });
+};
+
+export const uploadLogo = (formData, token) => {
+    return fetch(`${API}/upload`, {
+    method: 'POST',
+    headers: {
+      
+      Authorization: `Bearer ${token}`
+    },
+    body:formData
+  })
+    .then(response => {
+      // if (!response.ok) {
+      //   throw new Error(`HTTP error! Status: ${response.status}`);
+      // }
+      return response.json();
+    })
+    .catch(error => {
+      console.error('Error uploading photo', error);
+      throw error; // rethrow so caller can handle
+    });
+}
+
+export const removeLogo = (id,token) => {
+return fetch(`${API}/logo/remove?orgId=${id}`, {
+  method:"DELETE",
+  headers:{
+    Authorization: `Bearer ${token}`
+  }
+})
+ .then(response => {
+  if(!response.ok){
+    throw new Error(`HTTP error! Status: ${response.status}`)
+  }
+  return response.json();
+ })
+  .catch(error =>{
+     console.error('Error deleting photo', error);
+      throw error; // rethrow so caller can handle
+  })
+}
+
+export const getLogo = (id, token)=> {
+ return fetch(`${API}/logo/get?orgId=${id}`, {
+  method:"GET",
+  headers:{
+    Authorization: `Bearer ${token}`
+  }
+})
+ .then(response => {
+  return response.json();
+ })
+  .catch(error =>{
+     console.error('Error fetching logo', error);
+      throw error; // rethrow so caller can handle
+  }) 
+}
+
+export const getCurrencies = async() => {
+ try{
+    const response =   await fetch(`${API}/currencies`,{
+        method:"GET"
+      })
+      return response.json()
+ }catch(error){
+ console.log(error)
+ } 
+}
+export const saveCurrency = async(userId, currencyId) => {
+ try{
+    const response =   await fetch(`${API}/currency/${currencyId}/user/${userId}`,{
+        method:"PUT"
+      })
+      return response.json()
+ }catch(error){
+ console.log(error)
+ } 
+}
+// export const getCurrencies = ()=> {
+//  return fetch(`${API}/currencies`, {
+//   method:"GET",
+// })
+//  .then(response => {
+//   return response.json();
+//  })
+//   .catch(error =>{
+//      console.error('Error fetching logo', error);
+//       throw error; // rethrow so caller can handle
+//   }) 
+// }
+
+
+// https://api.exchangerate.host/convert?from=USD&to=EUR&amount=100 not free 100 per month requests with api key required
+export const convertCurrency = async(from, to, amount) => {
+try{
+  const response = await fetch(`https://open.er-api.com/v6/latest/${from}`, {
+    method:"GET",
+  })
+  return response.json()
+
+} catch(error){
+  console.log(error)
+}
+
+}
+
+
+export const generatePDF = async (payload, token) => {
+  try {
+    const response = await fetch(`${API}/generate-pdf`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(payload),
+    });
+    const blob = await response.blob();
+    return blob;
+
+  } catch (error) {
+    console.error("PDF error:", error);
+    return null;
+  }
+};
+
+export const generatePDFByTemplate = async (invoice) => {
+  try {
+    const response = await fetch(`${API}/generate-pdf/template`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(invoice),
+    });
+    const blob = await response.blob();
+    return blob;
+
+  } catch (error) {
+    console.error("PDF error:", error);
+    return null;
+  }
+};
+
+
+
+export const generatePDFPublic = async (payload) => {
+  try {
+    const response = await fetch(`${API}/generate-pdf/public`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    const blob = await response.blob();
+    return blob;
+
+  } catch (error) {
+    console.error("PDF error:", error);
+    return null;
+  }
+};
+
+export const forgotPassword = async (email) => {
+  try {
+    const response = await fetch(`${API}/forgot-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(email),
+    });
+
+   
+
+    const res = await response.json();
+    return res;
+
+  } catch (error) {
+    console.error("PDF error:", error);
+    return null;
+  }
+};
+
+
+export const verifyOTP = async (body) => {
+  try {
+    const response = await fetch(`${API}/verify-otp`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+   
+
+    const res = await response.json();
+    return res;
+
+  } catch (error) {
+    console.error("PDF error:", error);
+    return null;
+  }
+};
+
+
+// invoice-template/html/:invoiceId
+export const generateHTML = async (invoiceId) => {
+  try {
+    const response = await fetch(`${API}/invoice-template/html/${invoiceId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // body: JSON.stringify(payload),
+    });
+
+    const html = await response.text();
+    return html;
+
+  } catch (error) {
+    console.error("PDF error:", error);
+    return null;
+  }
 };

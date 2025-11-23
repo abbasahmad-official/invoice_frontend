@@ -1,18 +1,34 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { User } from "lucide-react"
 import Button from './Button'
 import { updateProduct } from "../admin/api"
 import { isAuthenticated } from "../auth/api"
+import { useCurrency } from '../CurrencyContext'
 
 const UpdateProductForm = ({ onSuccess ,product, setProduct }) => {
   const { user, token } = isAuthenticated();
+  const {currency} = useCurrency()
 
   // States for controlled values
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [success, setSuccess] = useState("");
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false)
+    const errorRef = useRef(null)
+   const successRef  = useRef(null)
   const createdBy = user._id;
+
+
+  const showError = () => {
+  if (!error) return ""
+
+return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padding:"10px", marginBottom:"9px",borderRadius:"10px"}}>
+   <p style={{margin: "0 auto"}}>{error}</p>
+</div>
+}
+
 
   // Controlled input handler
   const handleChange = (field) => (event) => {
@@ -28,16 +44,37 @@ const UpdateProductForm = ({ onSuccess ,product, setProduct }) => {
 
   // Submit handler
   const handleSubmit = async () => {
+    setLoading(true)
+    // console.log((price/currency).toFixed(2))
+    let priceAfterCurrencyChange = (price/currency).toFixed(2)
+    
     const data = await updateProduct(
       product._id,
-      { name, description, price, createdBy },
+      { name, description, price:priceAfterCurrencyChange, createdBy },
       token
     );
+    if(!data){
+      setLoading(false)
+      console.log("nothing returned")
+    }
 
     if (data.error) {
-      console.log("error", data.error);
+      setLoading(false)
+      setSuccess(null)
+      setError(data.error)
+      setTimeout(()=>{
+        if(errorRef.current){
+          errorRef.scrollIntoView({ behavior: "smooth", block: "center" })
+        }
+      },100)
+      // console.log("error", data.error);
     } else {
+      setLoading(false)
+      setError(null)
       setSuccess("Product updated successfully ✅");
+       if(successRef.current){
+          successRef.scrollIntoView({ behavior: "smooth", block: "center" })
+        }
       onSuccess()
 
     }
@@ -48,7 +85,7 @@ const UpdateProductForm = ({ onSuccess ,product, setProduct }) => {
     if (product) {
       setName(product.name || "");
       setDescription(product.description || "");
-      setPrice(product.price || "");
+      setPrice((product.price * currency).toFixed(2) || "");
     }
   }, [product]);
 
@@ -98,12 +135,16 @@ const UpdateProductForm = ({ onSuccess ,product, setProduct }) => {
             </div>
             <div className="field">
               <label htmlFor="price">Price</label>
+              <div style={{display: "flex",backgroundColor:"#F3F3F5",  border:"1px solid lightgray", borderRadius:"6px"}}>
+              <p style={{padding:"2px",}}>{user?.currency.symbol}</p>
               <input
+              className='border-left'
                 type="number"
                 id="price"
                 value={price}
                 onChange={handleChange("price")}
-              />
+                />
+                </div>
             </div>
           </div>
         </div>
@@ -114,6 +155,7 @@ const UpdateProductForm = ({ onSuccess ,product, setProduct }) => {
           </div>
           <div onClick={handleSubmit}>
             <Button
+            loading={loading}
               border="1px solid lightgray"
               blackHover={true}
               text="Save Product"
@@ -122,7 +164,7 @@ const UpdateProductForm = ({ onSuccess ,product, setProduct }) => {
           </div>
         </div>
 
-        {success && <p style={{ color: "green", marginTop: "10px" }}>{success}</p>}
+        {success && <p ref={successRef} style={{ color: "green", marginTop: "10px" }}>{success}</p>}
       </div>
     </div>
   );

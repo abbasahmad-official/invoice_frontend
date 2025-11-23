@@ -9,8 +9,10 @@ import CreateInvoiceForm from '../ui/CreateInvoiceForm'
 import InvoiceView from '../ui/InvoiceView'
 import UpdateInvoiceForm from '../ui/UpdateInvoiceForm'
 import { isAuthenticated } from '../auth/api'
+import { useCurrency } from '../CurrencyContext'
 
 const Invoice = ({directLink="", activeSection="", setDirectLink}) => {
+  const {currency} = useCurrency()
   const [invoices, setInvoices] = useState([]);
   const [updateInvoice, setUpdateInvoice] = useState(false);
   const [error, setError] = useState(false);
@@ -92,11 +94,11 @@ const filteredInvoices = invoices
                 day: "numeric", // 15
                 year: "numeric" // 2025
               });
-    
+    const priceConversion = (invoice.totalAmount * currency).toFixed(2)
     const matchesSearch =
       invoice?.invoiceNumber?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.client?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      invoice.totalAmount?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+      priceConversion?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.invoiceCode.toLowerCase().includes(searchTerm.toLowerCase()) || 
       formattedDate.toLowerCase().includes(searchTerm.toLowerCase()); 
 

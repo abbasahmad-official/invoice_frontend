@@ -12,9 +12,14 @@ import {
   getInvoice,
   updateUser,
   updateOrg,
+  removeManager,
+  convertCurrency,
+  generatePDFByTemplate
 } from "../admin/api";
 import { isAuthenticated } from "../auth/api";
 import jsPDF from "jspdf";
+import { useCurrency } from "../CurrencyContext";
+import SpinningWheel from "./SpinningWheel";
 
 const Table = ({
   // setManager,
@@ -46,10 +51,21 @@ const Table = ({
   const [error, setError] = useState([]);
   const { user, token } = isAuthenticated();
   const [invoice, setInvoice] = useState({});
+  const [loading, setLoading] = useState(false)
+  const [invId, setInvId] = useState(null)
+  // const [currency, setCurrency]=  useState(null)
+const {currency, setCurrencyCode} = useCurrency({})
+ 
 
-  // useEffect(()=>{
 
-  // }, [])
+  useEffect(()=>{
+    setCurrencyCode(user?.currency.code)
+// currencyChange()
+//   }, [])
+//   const currencyChange = async() =>{
+//     const data = await convertCurrency("USD")
+//     setCurrency(data.rates[user?.currency.code])
+}, [])
 
   const removeItem = (mode, id) => {
     if (mode == "product") {
@@ -89,14 +105,14 @@ const Table = ({
         }
       });
     } else if (mode == "manager") {
-      // removeOrg(id, token).then((data) => {
-      //   if (data.error) {
-      //     setError(data.error);
-      //   } else {
-      //     // console.log(data);
-      //     onSuccess();
-      //   }
-      // });
+      removeManager(id, token).then((data) => {
+        if (data.error) {
+          setError(data.error);
+        } else {
+          // console.log(data);
+          onSuccess();
+        }
+      });
     }
   };
 
@@ -107,7 +123,7 @@ const Table = ({
       if (data.error) {
         console.log(data.error);
       } else {
-        console.log(data);
+        // console.log(data);
         const cleanedForm = {
           ...data,
           client: data.client._id,
@@ -125,9 +141,7 @@ const Table = ({
     }
   };
 
-  // useEffect(()=>{
-  //   fetchInvoice();
-  // }, [])
+
 
   const formatDate = (dateStr) =>
     new Date(dateStr).toLocaleDateString("en-US", {
@@ -137,92 +151,27 @@ const Table = ({
       day: "numeric",
     });
 
-  const downloadPDF = async (invoiceId) => {
-    const invoice = await getInvoice(invoiceId, token);
-    setInvoice(invoice);
 
-    const pdf = new jsPDF("p", "mm", "a4");
-    let top = 20;
-    const left = 15;
-
-    // Title
-    pdf.setFontSize(18);
-    pdf.text("INVOICE", left, top);
-    top += 10;
-
-    // Invoice Details
-    pdf.setFontSize(12);
-    pdf.text(`Invoice Number: ${invoice._id}`, left, top);
-    top += 7;
-    pdf.text(`Issue Date: ${formatDate(invoice.createdAt)}`, left, top);
-    top += 7;
-    pdf.text(`Due Date: ${formatDate(invoice.dueDate)}`, left, top);
-    top += 10;
-
-    // Client Info
-    pdf.setFontSize(14);
-    pdf.text("Client Information:", left, top);
-    top += 7;
-    pdf.setFontSize(12);
-    pdf.text(`Name: ${invoice.client?.name || "N/A"}`, left, top);
-    top += 6;
-    pdf.text(`Email: ${invoice.client?.email || "N/A"}`, left, top);
-    top += 6;
-    pdf.text(`Phone: ${invoice.client?.phone || "N/A"}`, left, top);
-    top += 10;
-
-    // Items Header
-    pdf.setFontSize(14);
-    pdf.text("Items:", left, top);
-    top += 8;
-
-    pdf.setFontSize(12);
-    pdf.text("Description", left, top);
-    pdf.text("Qty", left + 70, top);
-    pdf.text("Price", left + 90, top);
-    pdf.text("Total", left + 120, top);
-    top += 6;
-
-    // Items Loop
-    invoice.items?.forEach((item) => {
-      const name = item.productId?.name || "N/A";
-      const qty = item.quantity;
-      const price = item.price;
-      const totalPrice = (qty * price).toFixed(2);
-
-      pdf.text(name, left, top);
-      pdf.text(String(qty), left + 70, top);
-      pdf.text(`$${price}`, left + 90, top);
-      pdf.text(`$${totalPrice}`, left + 120, top);
-      top += 6;
-    });
-
-    top += 10;
-
-    // Summary
-    pdf.setFontSize(14);
-    pdf.text("Summary:", left, top);
-    top += 7;
-    pdf.setFontSize(12);
-    pdf.text(`Subtotal: $${subtotal}`, left, top);
-    top += 6;
-    pdf.text(`Tax (${invoice.tax || 0}%): $${taxAmount}`, left, top);
-    top += 6;
-    pdf.text(
-      `Discount (${invoice.discount || 0}%): $${discountAmount}`,
-      left,
-      top
-    );
-    top += 6;
-    pdf.text(`Total: $${total}`, left, top);
-    top += 10;
-
-    // Footer
-    pdf.setFontSize(10);
-    pdf.text("Thank you for your business!", left, top);
-
-    // Save
-    pdf.save(`invoice-${invoice._id}.pdf`);
+  const downloadPDF = async (invoice) => {
+    setLoading(true)
+    setInvId(invoice._id)
+    const blob = await generatePDFByTemplate(invoice) 
+     if (!blob) {
+      setLoading(false)
+    console.error("Failed to generate PDF");
+    setLoading(false);
+    return;
+  }
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = url
+  link.download = `invoice_${invoice?.invoiceNumber}.pdf`
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+  setInvId(null)
+  setLoading(false)
   };
 
   const calculateInvoiceSummary = (items = [], tax = 0, discount = 0) => {
@@ -332,7 +281,7 @@ const Table = ({
                     <td>
                       {invoice.client ? invoice.client.name : "client removed"}
                     </td>
-                    <td>{invoice.totalAmount}</td>
+                    <td>{user?.currency.symbol} {(invoice.totalAmount * currency).toFixed(2)}</td>
                     <td>
                       <div className={`${invoice.status}`}>
                         <p>{invoice.status}</p>
@@ -355,10 +304,10 @@ const Table = ({
                             fetchInvoice(invoice._id);
                           }}
                         />
-                        <Download
+                       {(loading && invId == invoice?._id)? <SpinningWheel size={25}/>:<Download
                           size={25}
-                          onClick={() => downloadPDF(invoice._id)}
-                        />
+                          onClick={() => downloadPDF(invoice)}
+                        />}
                         <Trash2
                           size={25}
                           color="red"
@@ -391,8 +340,8 @@ const Table = ({
                     <td>{client.phone}</td>
                     <td>{client.address}</td>
                     <td>
-                      <div>
-                        <p>invoices</p>
+                      <div style={{textAlign:"center"}}>
+                        <p>{client.invoiceCount || "invoices"}</p>
                       </div>
                     </td>
                     <td>{formattedDate}</td>
@@ -437,13 +386,13 @@ const Table = ({
                         <p>{product.description}</p>
                       </div>
                     </td>
-                    <td>{product.category || "category"}</td>
-                    <td>{product.price}</td>
-                    <td>
+                    {/* <td>{product.category || "category"}</td> */}
+                    <td>{user?.currency.symbol} {(product.price * currency).toFixed(2)}</td>
+                    {/* <td>
                       <div>
                         <p>unit per hour</p>
                       </div>
-                    </td>
+                    </td> */}
                     <td>{formattedDate}</td>
                     <td>
                       <div className="icons">
@@ -549,11 +498,11 @@ const Table = ({
                       </div>
                       </td>
                    
-                    <td>
+                    {/* <td>
                       <div>
                         <p>One Time Purchase</p>
                       </div>
-                    </td>
+                    </td> */}
                     <td>{formattedDate}</td>
                     <td>
                       <div className="icons">

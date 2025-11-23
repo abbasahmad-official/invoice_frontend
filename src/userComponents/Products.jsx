@@ -3,16 +3,18 @@ import Button from '../ui/Button'
 import SearchBar from '../ui/Search'
 import Table from '../ui/Table'
 import TagCard from '../ui/TagCard'
-import {listProducts, getProduct, getProductsByUser} from "../admin/api"
+import {listProducts, getProduct, getProductsByUser, listClientInvoicesCount} from "../admin/api"
 import CreateProductForm from '../ui/CreateProductForm'
 import UpdateProductForm from '../ui/UpdateProductForm'
 import { isAuthenticated } from '../auth/api'
+import { useCurrency } from '../CurrencyContext'
 // import '../styles/clients.css'
 
 
 const Products = ({directLink= "", activeSection="", setDirectLink}) => {
 
   const {user, token} = isAuthenticated();
+  const {currency} = useCurrency()
 
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState();
@@ -21,13 +23,13 @@ const Products = ({directLink= "", activeSection="", setDirectLink}) => {
   const [error, setError] = useState(false);
 const [loading, setLoading] = useState(true); 
 const [createProduct, setCreateProduct] = useState(false);
-const tableHeadNames = ["Product/Service", "Category", "Price", "Unit", "Added", "Actions"];  
+const tableHeadNames = ["Product/Service", "Price", "Added", "Actions"];  
 const [searchTerm, setSearchTerm] = useState('');
 const [shouldReloadProducts, setShouldReloadProducts] = useState(false);
 
 const handleSearchChange = (e) => {
   setSearchTerm(e.target.value);
-  console.log(e.target.value)
+  // console.log(e.target.value)
 };
 
 
@@ -42,6 +44,8 @@ getProductsByUser(user._id, token)
       console.error("Failed to load products:", err);
     });
 }, [shouldReloadProducts]);
+
+
 
 useEffect(() => {
   if (directLink === "products" && activeSection === "products") {
@@ -69,9 +73,13 @@ useEffect(() => {
 }, [updateProduct]);
 
 
-const filteredProducts = products.filter((product) =>
+const filteredProducts = products.filter((product) =>{
+  const priceCurrencyChange = (product.price * currency).toFixed(2)
+return(
   product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  product.price?.toString().toLowerCase().includes(searchTerm.toLowerCase()) 
+  priceCurrencyChange?.toString().toLowerCase().includes(searchTerm.toLowerCase()) 
+)
+}
 
 );
 
@@ -95,8 +103,8 @@ return (
     </div>
     <div className="tag-card-container">
     <TagCard icon="Package" iconColor="blue" tagName="Total Products" numbers={length}/>
-    <TagCard icon="Tag" iconColor="green" tagName={"Categories"} numbers={0} />
-    <TagCard icon="DollarSign" iconColor="purple" tagName={"Avg. Price"} numbers={avgPrice} />
+    {/* <TagCard icon="Tag" iconColor="green" tagName={"Categories"} numbers={0} /> */}
+    <TagCard icon2={user?.currency.symbol} icon2Color={"purple"} icon="DollarSign" iconColor="purple" tagName={"Avg. Price"} numbers={(avgPrice * currency).toFixed(2)} />
 
     </div>
     <SearchBar value={searchTerm} onChange={handleSearchChange}/>

@@ -1,0 +1,231 @@
+/* SETTINGS PAGE STYLE */
+
+.settings-container {
+  padding: 30px;
+  background-color: rgb(239, 239, 239);
+  min-height: 100vh;
+}
+/* rgb(239, 239, 239) */
+.settings-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.settings-subtitle {
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+.settings-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.settings-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.settings-label {
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.settings-description {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.file-input {
+  font-size: 14px;
+}
+
+/* Select Dropdown */
+.select-input {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 14px;
+  background-color: #fff;
+ 
+}
+
+.select-input {
+  max-height: 200px;
+  overflow-y: auto; /* allow scrolling if many options */
+}
+
+
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #d1d5db;
+  border-radius: 34px;
+  transition: 0.3s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+input:checked + .slider {
+  background-color: #000;
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* Button */
+.save-btn {
+  background-color: #000;
+  color: white;
+  border: none;
+  padding: 8px 26px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.save-btn:hover {
+  opacity: 0.85;
+}
+
+/* ========================= */
+/* Custom Logo Upload Styles */
+/* ========================= */
+
+.upload-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.custom-upload-box {
+  width: 90px;
+  height: 90px;
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  background-color: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.custom-upload-box:hover {
+  border-color: #000;
+  background-color: #f3f4f6;
+}
+
+.upload-plus {
+  font-size: 36px;
+  color: #9ca3af;
+}
+
+.uploaded-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* Optional: hover overlay when image exists */
+.custom-upload-box {
+  position: relative; /* important! contains the overlay */
+  width: 90px;
+  height: 90px;
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  background-color: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.custom-upload-box:hover {
+  border-color: #000;
+  background-color: #f3f4f6;
+}
+
+.upload-plus {
+  font-size: 36px;
+  color: #9ca3af;
+}
+
+.uploaded-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* ✅ Hover overlay fix */
+.custom-upload-box::after {
+  content: "+";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.custom-upload-box:hover::after {
+  opacity: 1;
+}
+

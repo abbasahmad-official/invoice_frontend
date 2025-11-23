@@ -2,7 +2,7 @@ import React, {useState, useEffect, Fragment} from 'react'
 import Button from '../ui/Button'
 import SearchBar from '../ui/Search'
 import Table from '../ui/Table'
-import {listClients, updateClient, getClient} from "../admin/api"
+import {listClients, updateClient, getClient, listClientInvoicesCount} from "../admin/api"
 import CreateClientForm from '../ui/CreateClientForm'
 import UpdateClientForm from "../ui/UpdateClientForm"
 import { isAuthenticated } from '../auth/api'
@@ -24,19 +24,30 @@ const [shouldReloadClients, setShouldReloadClients] = useState(false);
 
 const [searchTerm, setSearchTerm] = useState('');
 
+
+
+
 const handleSearchChange = (e) => {
   setSearchTerm(e.target.value);
   console.log(e.target.value)
 };
 // 
 useEffect(() => {
-  listClients(user.organization)
+  listClientInvoicesCount(user?.organization)
     .then((data) => { 
+      // console.log(data)
       setClients(data); // update state
     })
     .catch((err) => {
       console.error("Failed to load clients:", err);
     });
+  // listClients(user.organization)
+  //   .then((data) => { 
+  //     setClients(data); // update state
+  //   })
+  //   .catch((err) => {
+  //     console.error("Failed to load clients:", err);
+  //   });
 }, [shouldReloadClients]);
 
 useEffect(() => {

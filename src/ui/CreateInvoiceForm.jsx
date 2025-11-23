@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FileText, Calendar, DollarSign } from 'lucide-react';
 import Button from './Button';
 import '../styles/createClientForm.css'; // Reusing same styles
 import Dropdown from "./Dropdown"
 import { createInvoiceSend,listProducts, listClients, createInvoice, getClientsByUser, getProductsByUser } from "../admin/api"
 import { isAuthenticated } from '../auth/api';
+import { useCurrency } from '../CurrencyContext';
 
 const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
   const { user, token } = isAuthenticated();
+  const {currency} = useCurrency()
   const [form, setForm] = useState({
     client: '',
     items: [{ productId: '', quantity: 1, price: '' }],
@@ -27,6 +29,21 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
 
   const [products, setProducts] = useState([])
   const [clients, setClients] = useState([])
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [loadingSend, setLoadingSend] = useState(false)
+  const errorRef = useRef(null)
+  const successRef = useRef(null)
+
+
+const showError = () => {
+  if (!error) return ""
+
+return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padding:"10px", marginBottom:"9px",borderRadius:"10px"}}>
+   <p style={{margin: "0 auto"}}>{error}</p>
+</div>
+}
+
 
   const handleItemChange = (index, field, value) => {
     const newItems = [...form.items];
@@ -72,7 +89,8 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
   };
 
   const handleSubmit = async (mode) => {
-     
+  
+    
     const cleanedItems = form.items.filter(
       (item) => item.productId && item.quantity > 0
     );
@@ -89,20 +107,38 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
       delete cleanedForm.startDate;
       delete cleanedForm.endDate;
     }
+     console.log(cleanedForm)
 
     try {
       // const data = await createInvoice(cleanedForm, token);
+      let data;
       if(mode == "send"){
-        const data = await createInvoiceSend(cleanedForm, token);
+        setLoadingSend(true)
+   
+         data = await createInvoiceSend(cleanedForm, token);
+        // if(data.error){
+        //   console.log("error",data.error)
+        // } 
+        // console.log(data)
       } else {
-        const data = await createInvoice(cleanedForm, token);
+         data = await createInvoice(cleanedForm, token);
+         setLoading(true)
       }
-      onSuccess()
-      // console.log("Invoice created:", data);
-    } catch (error) {
-      console.error("Invoice creation failed:", error);
+
+      if(data.error){
+        setLoading(false)
+         setLoadingSend(false)
+        // console.log(data.error)
+        setError(data.error)
+         setTimeout(() => {
+    if (errorRef.current) {
+      errorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-    setForm({
+  }, 100);
+      } else{
+        setLoading(false)
+        setLoadingSend(false)
+  setForm({
       client: '',
       items: [{ productId: '', quantity: 1, price: '' }],
       tax: 0,
@@ -116,7 +152,23 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
       endDate: '',
       createdBy: user._id,
     });
-    setSuccess("Invoice created successfully ✅")
+      setSuccess(data.message)
+        onSuccess()
+         setTimeout(() => {
+    if (successRef.current) {
+      successRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, 100);
+     
+     
+      }
+      // console.log("Invoice created:", data);
+    } catch (error) {
+      setLoading(false)
+      setLoadingSend(false)
+      console.error("Invoice creation failed:", error);
+    }
+  
     
   };
 
@@ -163,8 +215,8 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
 
     const taxAmount = (form.tax / 100) * subtotal;
     const discountAmount = (form.discount / 100) * subtotal;
-    const total = subtotal + taxAmount - discountAmount;
-
+    let total = subtotal + taxAmount - discountAmount;
+      // total = total * currency
     setForm(prevForm => ({
       ...prevForm,
       totalAmount: total.toFixed(2),
@@ -189,6 +241,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
 
         {/* Invoice Details */}
         <div className="basic-info">
+          {showError()}
           <div className="head">
             <p><FileText size={15} /> Invoice Information</p>
             <p>Fill out the invoice details</p>
@@ -196,7 +249,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
           <div className="fields">
             <div className="field">
               <label>Client</label>
-              <select name="client" value={form.client} onChange={handleChange}>
+              <select className='custom-dropdown' name="client" value={form.client} onChange={handleChange}>
                 <option value="">Select Client</option>
                 {Array.isArray(clients) && clients.map((client, i) => { return <option key={i} value={client._id}>{client.name}</option> })}
               </select>
@@ -205,7 +258,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
 
             <div className="field">
               <label>Status</label>
-              <select name="status" value={form.status} onChange={handleChange}>
+              <select className='custom-dropdown' name="status" value={form.status} onChange={handleChange}>
                 <option value="Pending">Pending</option>
                 <option value="Paid">Paid</option>
                 <option value="Overdue">Overdue</option>
@@ -242,6 +295,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
               <div className="field" key={index}>
                 <label>Product {index + 1}</label>
                 <select
+                className='custom-dropdown'
                   value={item.productId}
                   onChange={(e) => handleItemChange(index, 'productId', e.target.value)}
                 >
@@ -261,7 +315,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
                 <input
                   type="number"
                   placeholder="Price"
-                  value={item.price || ''}
+                  value={(item.price * currency).toFixed(2) || ''}
                   readOnly
                 />
                 {form.items.length > 1 && (
@@ -283,7 +337,7 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
             </div>
             <div className="field">
               <label>Total Amount</label>
-              <input readOnly type="number" name="totalAmount" value={form.totalAmount} onChange={handleChange} />
+              <input readOnly type="number" name="totalAmount" value={((form.totalAmount * currency).toFixed(2))} onChange={handleChange} />
             </div>
           </div>
         </div>
@@ -338,13 +392,13 @@ const CreateInvoiceForm = ({ onSuccess ,setCreateInvoice }) => {
             <Button backgroundColor="white" text="Cancel" color="black" noIcon={true} />
           </div>
           <div onClick={()=>handleSubmit("save")}>
-            <Button border="1px solid lightgray" icon="Save" blackHover={true} text="Save Invoice" />
+            <Button loading={loading} border="1px solid lightgray" icon="Save" blackHover={true} text="Save Invoice" />
           </div>
           <div onClick={()=>handleSubmit("send")}>
-            <Button border="1px solid lightgray" icon="Save" blackHover={true} text="Save Invoice  & Send" />
+            <Button loading={loadingSend} border="1px solid lightgray" icon="Save" blackHover={true} text="Save Invoice  & Send" />
           </div>
         </div>
-          {success && <p style={{ color: "green", marginTop: "10px" }}>{success}</p>}
+          {success && <p ref={successRef} style={{ color: "green", marginTop: "10px" }}>{success}</p>}
       </div>
     </div>
   );

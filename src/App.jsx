@@ -1,4 +1,4 @@
-import React,{ useState } from 'react'
+import React,{ useState, useContext } from 'react'
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 // import Home from './AdminHome';
 import AdminHome from './AdminHome';
@@ -11,11 +11,13 @@ import InvoiceView from './ui/InvoiceView';
 import SuperAdminHome from './SuperAdminHome';
 import SuperAdminRoute from './auth/SuperAdminRoute'
 import Suspended from './Suspended';
-
+import {CurrencyProvider} from "./CurrencyContext"
 
 function App() {
 
   return (
+    <CurrencyProvider>
+
     <BrowserRouter>
     <Routes>
       <Route path='/' element={ <AdminRoute> <AdminHome/> </AdminRoute>}/>
@@ -28,6 +30,8 @@ function App() {
        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes> 
     </BrowserRouter>
+    
+    </CurrencyProvider>
   )
 }
 

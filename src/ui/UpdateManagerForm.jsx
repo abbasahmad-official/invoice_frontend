@@ -12,6 +12,7 @@ const UpdateManagerForm = ({onSuccess ,setCreateUpdateManager, manager, updateMa
   const [success, setSuccess] = useState('');
   const [show, setShow] = useState(false);
   const [notMatched, setNotMatched] = useState('');
+  const [loading, setLoading] = useState(false)
   const organization = user.organization;
 
   const handleChange = (name) => (event) => {
@@ -33,6 +34,7 @@ useEffect(() => {
 
 
 const handleSubmit = async() => {
+  setLoading(true)
     // console.log(updateManager)
     // const {name, email, organization, _id} = updateManager
     const userId = user._id
@@ -40,12 +42,15 @@ const handleSubmit = async() => {
       const data =  await updateUser({name, email}, userId, token);
       if(!data){
         console.error("API returned null or undefined");
+        setLoading(false)
       return;
       }
       if(data.error){
+        setLoading(false)
           console.log("error", data.error);
         
         } else {
+          setLoading(false)
           console.log(data)
           setSuccess("Manager updated successfully ✅")
             
@@ -97,7 +102,7 @@ const showPassword = async(e) => {
             <Button backgroundColor='white' text="cancel" color='black' noIcon={true} />
             </div>
             <div onClick={handleSubmit}> 
-            <Button border='1px solid lightgray' blackHover={true} icon='Save' text={"Save manager"}/>
+            <Button loading={loading} border='1px solid lightgray' blackHover={true} icon='Save' text={"Save manager"}/>
             </div>
         </div>
  {/* </form> */}

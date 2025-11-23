@@ -9,6 +9,7 @@ import {
   Menu,
   X,
   Car,
+  Settings,
 } from "lucide-react";
 import "./styles/home.css";
 import Button from "./ui/Button";
@@ -20,6 +21,9 @@ import Clients from "./userComponents/Clients";
 import Products from "./userComponents/Products";
 import Card from "./ui/Card";
 import { isAuthenticated, signout } from "./auth/api";
+import { getLogo } from "./admin/api";
+import { API } from "./config";
+import ManagerSettings from "./userComponents/ManagerSettings";
 
 const UserHome = () => {
   const panelRef = useRef(null);
@@ -28,6 +32,7 @@ const UserHome = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1016);
   const [isPanelOpen, setIsPanelOpen] = useState(!isMobile);
   const [directLink, setDirectLink] = useState("");
+  const[logo, setLogo] = useState({})
   
   const navigate = useNavigate()
 
@@ -62,6 +67,20 @@ const UserHome = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+    useEffect(()=>{
+  fetchLogo()
+    },[])
+  
+  const fetchLogo = async()=>{
+    const data  = await getLogo(user.organization, token)
+    if(data.error && data.status== 404){
+      console.log(data.error)
+    } else {
+      // console.log(data)
+      setLogo(data)
+    }
+  }
+
   const isActive = (path) => ({
     backgroundColor: activeSection === path ? "#dde2f6ff" : "#ffffff",
   });
@@ -71,6 +90,14 @@ const UserHome = () => {
         navigate("/login")
       })
     }
+
+    const refreshLogo = async () => {
+      const data = await getLogo(user._id, token);
+      if (!data.error) {
+        setLogo(data);
+      }
+    };
+    
 
   return (
     <div className="box">
@@ -90,10 +117,10 @@ const UserHome = () => {
       <div ref={panelRef} className={`side-panel ${isPanelOpen ? "show" : ""}`}>
         <div className="side-panel-header gap">
           <div className="logo">
-            <img src="./logo-invoice.png" alt="my logo" width={50}/>
+            <img src={logo?.path ? API + logo.path : "./logo-invoice.png"} alt="my logo" width={50}/>
           </div>
           <div className="info">
-            <p>SimplyBill</p>
+            <p>{logo?.companyName || "SimplyBill"}</p>
             <p>Invoice Management</p>
           </div>
           {isMobile && <div className="close" onClick={() => setIsPanelOpen(false)}>
@@ -165,6 +192,18 @@ const UserHome = () => {
             </div>
             <p>Products</p>
           </div>
+          <div
+            className="feature gap"
+            style={isActive("setting")}
+            onClick={() => {setActiveSection("setting")
+              setIsPanelOpen(false)
+            }}
+          >
+            <div className="icon">
+              <Settings />
+            </div>
+            <p>Setting</p>
+          </div>
         </div>
       </div>
 
@@ -174,6 +213,7 @@ const UserHome = () => {
         {activeSection === "invoices" && <Invoice directLink={directLink} setDirectLink={setDirectLink} activeSection={activeSection}/>}
         {activeSection === "clients" && <Clients  directLink={directLink} setDirectLink={setDirectLink} activeSection={activeSection}/>}
         {activeSection === "products" && <Products directLink={directLink} setDirectLink={setDirectLink} activeSection={activeSection} />}
+        {activeSection === "setting" && <ManagerSettings directLink={directLink} setDirectLink={setDirectLink} activeSection={activeSection} refreshLogo={refreshLogo} />}
       </div>
     </div>
   );

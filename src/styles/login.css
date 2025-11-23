@@ -189,6 +189,16 @@ body {
   }
 }
 
+.forget-button{
+  color: blue;
+  font-size: 14px;
+ 
+}
+.forget-button:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 @media (max-width: 382px) {
     .tasks .task .logo{
         padding: 4px !important;

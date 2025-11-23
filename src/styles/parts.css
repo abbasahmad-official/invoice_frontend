@@ -81,11 +81,19 @@
 
 
 .dropdown {
-
     display: flex;
     align-items: center;
     justify-content: space-between;
     /* gap: 10px; */
+    padding: 2px 6px;
+    border-radius: 6px;
+    background-color: #F3F3F5;
+    transition: outline 0.3s ease-in-out;
+    width: 100%;
+}
+.custom-dropdown {
+        outline: none;
+        border: 1px solid lightgray;
     padding: 2px 6px;
     border-radius: 6px;
     background-color: #F3F3F5;

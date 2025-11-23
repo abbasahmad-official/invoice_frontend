@@ -34,7 +34,7 @@ const Managers = ({directLink= "", activeSection="", setDirectLink}) => {
   const [error, setError] = useState(false);
 const [loading, setLoading] = useState(true); 
 const [createManager, setCreateManager] = useState(false);
-const tableHeadNames = ["Manager Name", "Admin Email", "Status", "Plan", "Created", "Actions"];  
+const tableHeadNames = ["Manager Name", "Admin Email", "Status", "Created", "Actions"];  
 const [searchTerm, setSearchTerm] = useState('');
 const [shouldReloadProducts, setShouldReloadProducts] = useState(false);
 

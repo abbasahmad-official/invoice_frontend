@@ -2,7 +2,7 @@ import React, {useState, useEffect, Fragment} from 'react'
 import Button from '../ui/Button'
 import SearchBar from '../ui/Search'
 import Table from '../ui/Table'
-import {listClients, updateClient, getClient, getClientsByUser} from "../admin/api"
+import {listClients, updateClient, getClient, getClientsByUser, getClientsByUserAndCount} from "../admin/api"
 import CreateClientForm from '../ui/CreateClientForm'
 import UpdateClientForm from "../ui/UpdateClientForm"
 import { isAuthenticated } from '../auth/api'
@@ -28,9 +28,17 @@ const handleSearchChange = (e) => {
 };
 
 useEffect(() => {
-  // listClients()
-  getClientsByUser(user._id, token)
+//   listClients()
+//   getClientsByUser(user._id, token)
+//     .then((data) => { 
+//       setClients(data); // update state
+//     })
+//     .catch((err) => {
+//       console.error("Failed to load clients:", err);
+// })
+  getClientsByUserAndCount(user._id, token)
     .then((data) => { 
+      console.log(data)
       setClients(data); // update state
     })
     .catch((err) => {

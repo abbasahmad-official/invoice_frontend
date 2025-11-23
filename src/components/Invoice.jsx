@@ -9,6 +9,7 @@ import CreateInvoiceForm from '../ui/CreateInvoiceForm'
 import InvoiceView from '../ui/InvoiceView'
 import UpdateInvoiceForm from '../ui/UpdateInvoiceForm'
 import { isAuthenticated } from '../auth/api'
+import { useCurrency } from '../CurrencyContext'
 
 const Invoice = ({directLink="", activeSection="", setDirectLink}) => {
   const [invoices, setInvoices] = useState([]);
@@ -24,6 +25,7 @@ const[viewInvoiceId, setViewInvoiceId] = useState();
 const [ seeInvoice ,setSeeInvoice] = useState({});
 const [shouldReloadInvoices, setShouldReloadInvoices] = useState(false)
 const {user, token} = isAuthenticated()
+const {currency, setCurrencyCode} = useCurrency()
 
 const [form, setForm] = useState({
     client: '',
@@ -81,6 +83,7 @@ useEffect(() => {
 
 
  useEffect(() => {
+  // setCurrencyCode(user?.currency.code)
   // console.log(user.organization)
   listInvoices(user.organization)
     .then((data) => {
@@ -101,7 +104,7 @@ useEffect(() => {
 
 const handleSearchChange = (e) => {
   setSearchTerm(e.target.value);
-  console.log(e.target.value)
+  // console.log(e.target.value)
 };
 
 
@@ -117,11 +120,11 @@ const filteredInvoices = invoices
                 day: "numeric", // 15
                 year: "numeric" // 2025
               });
-    
+    const totalAmountCurrencyChange = (invoice.totalAmount * currency).toFixed(2)
     const matchesSearch =
       invoice?.invoiceNumber?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.client?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      invoice.totalAmount?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
+      totalAmountCurrencyChange?.toString().toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.invoiceCode.toLowerCase().includes(searchTerm.toLowerCase()) || 
       formattedDate.toLowerCase().includes(searchTerm.toLowerCase()); 
 

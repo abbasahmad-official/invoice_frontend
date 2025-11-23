@@ -1,22 +1,41 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect, useRef} from 'react'
 import {User, Package} from "lucide-react"
 import Button from './Button'
-import { updateProduct, createProduct } from '../admin/api'
+import { updateProduct, createProduct} from '../admin/api'
 import { isAuthenticated } from '../auth/api'
+import { useCurrency } from '../CurrencyContext'
+
 
 
 const CreateProductForm = ({onSuccess, setCreateProduct}) => {
   const { user, token } = isAuthenticated();
+  const {currency} = useCurrency()
 
   // States for controlled values
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [success, setSuccess] = useState("");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false)
+  const errorRef = useRef(null)
+ const successRef  = useRef(null)
+ 
   const createdBy = user._id;
+
+
+
+const showError = () => {
+  if (!error) return ""
+
+return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padding:"10px", marginBottom:"9px",borderRadius:"10px"}}>
+   <p style={{margin: "0 auto"}}>{error}</p>
+</div>
+}
 
   // Controlled input handler
   const handleChange = (field) => (event) => {
+    setError("")
     const value = event.target.value;
     if (field === "name") {
       setName(value);
@@ -29,20 +48,38 @@ const CreateProductForm = ({onSuccess, setCreateProduct}) => {
 
   // Submit handler
   const handleSubmit = async () => {
+ setLoading(true)
+    const priceAfterConversion = (price/currency).toFixed(2)
     const data = await createProduct(
-      { name, description, price, createdBy, organization:user.organization },
+      { name, description, price:priceAfterConversion, createdBy, organization:user.organization },
       token
     );
-
+// 
     if (data.error) {
-      console.log("error", data.error);
+      setLoading(false)
+   setSuccess(null)
+      // console.log("error", data.error);
+      setError(data.error)
+        setTimeout(() => {
+    if (errorRef.current) {
+      errorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, 100);
     } else {
+      setLoading(false)
+      setError(null)
       setSuccess("Product created successfully ✅");
-      onSuccess()
-      setName("");
-      setDescription("");
-      setPrice("");
-      console.log(data)
+        setTimeout(() => {
+    if (successRef.current) {
+      successRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, 100);
+  setName("");
+  setDescription("");
+  setPrice("");
+  
+  onSuccess()
+      // console.log(data)
     }
   };
 
@@ -52,15 +89,16 @@ const CreateProductForm = ({onSuccess, setCreateProduct}) => {
       <div className="client-create-header">
         <div onClick={()=> setCreateProduct(false)}>
 
-        <Button icon='ArrowLeftIcon' backgroundColor='transparent' text="Back to Clients" border='none' color='black'/>
+        <Button icon='ArrowLeftIcon' backgroundColor='transparent' text="Back to Products" border='none' color='black'/>
         </div>
         <div className="info">
-        <h3>Add New Client</h3>
-        <p>Enter client information for invoicing</p>
+        <h3>Add New Product</h3>
+        <p>Enter product information for invoicing</p>
         </div>  
       </div>
 
         <div className="basic-info">
+          {showError()}
             <div className="head">
                 <p> <User size={15}/>Product Information</p>
                 <p>Basic details about your product or service</p>
@@ -90,10 +128,10 @@ const CreateProductForm = ({onSuccess, setCreateProduct}) => {
             <Button backgroundColor='white' text="cancel" color='black' noIcon={true} />
             </div>
             <div onClick={handleSubmit}>
-            <Button  border='1px solid lightgray' blackHover={true} icon='Save' text={"Save Product"}/>
+            <Button loading={loading}  border='1px solid lightgray' blackHover={true} icon='Save' text={"Save Product"}/>
             </div>
         </div>
-  {success && <p style={{ color: "green", marginTop: "10px" }}>{success}</p>}
+  {success && <p ref={successRef} style={{ color: "green", marginTop: "10px" }}>{success}</p>}
     </div>
     </div>
   )

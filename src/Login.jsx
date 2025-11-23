@@ -1,8 +1,13 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Navigate, useNavigate} from "react-router-dom"
 import './styles/login.css'
 import {FileText, Users, TrendingUp} from "lucide-react"
 import {signup, signin, authenticate, isAuthenticated} from "./auth/api"
+import OTPBoxes from './ui/OTPForm'
+import OTPPage from './ui/OTPUsage'
+import SpinningWheel from './ui/SpinningWheel'
+import {Eye, Lock, EyeOff} from "lucide-react"
+
 
 const Login = () => {
     const navigate = useNavigate();
@@ -13,6 +18,9 @@ const Login = () => {
     const [name, setName] = useState("");
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [forgetPassword, setForgetPassword] = useState(false)
+    const realignRef = useRef()
+    const passwordRef = useRef()
 
     useEffect(()=>{
       isAuthenticated() && navigate("/")
@@ -83,6 +91,11 @@ const handleSubmit = async (e) => {
       if (data.error) {
         // console.log(data.error);
         setError(data.error)
+                 setTimeout(() => {
+    if (realignRef.current) {
+      realignRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, 100);
         setLoading(false)
       } else {
         
@@ -96,7 +109,7 @@ const handleSubmit = async (e) => {
     }
   }
 };
-
+// 
 const showError = () => {
   if (!error) return ""
 
@@ -105,9 +118,23 @@ return <div className='tasks' style={{background: "#FF7081", padding:"10px", bor
 </div>
 }
 
+const [hide, setHide] = useState(false)
+const passwordVisibility = ()=>{
+  if(!hide){
+    passwordRef.current.type= "text"
+    setHide(prev => !prev)
+  } else{
+    passwordRef.current.type = "password"
+    setHide(prev => !prev)
+  }
+}
+
+const handleForgotPassword = () => {
+setForgetPassword(true)
+}
   return (
     <div className='login'>
-        <div className="form">
+       {forgetPassword?<OTPPage/>:<div className="form">
             <div className="info">
                 <div className="logo"><FileText color='white' /></div>
                 <div className="after-logo">
@@ -169,13 +196,21 @@ return <div className='tasks' style={{background: "#FF7081", padding:"10px", bor
                     <button className={`register-btn login-btn ${mode == "register" && "active"}`} onClick={()=> handleClick("register")} >Register</button>
                 </div> */}
                 <form onSubmit={handleSubmit}>
+                    
                 {/* {mode==="login" ? */}
                  <div className="inputs">
                     <label htmlFor="email">Email</label>
                     <input type="email" placeholder='Email' value={email} onChange={handleChange("email")} className='input-login' />
                     <label htmlFor="password">Password</label>
-                    <input type="password" placeholder='Password' value={password} className='input-login' onChange={handleChange("password")} />
-                    <button style={{cursor: "pointer"}} className="submit">{loading? "logging...": "Login"}</button>
+                    <div style={{position:"relative"}}>
+                    <input style={{ width:"100%"}} ref={passwordRef} type="password" placeholder='Password' value={password} className='input-login' onChange={handleChange("password")} />
+                    { !hide?<EyeOff onClick={passwordVisibility}  style={{position:"absolute", right:"5", top:"50%", transform:"translateY(-84%)", cursor:"pointer"}} size={15}/>
+                    :<Eye onClick={passwordVisibility} style={{position:"absolute", right:"5", top:"50%", transform:"translateY(-84%)", cursor:"pointer"}} size={15}/>}
+                    </div>
+                  <div style={{display:"flex", justifyContent:"flex-end"}}>
+                        <a className='forget-button' onClick={handleForgotPassword}>Forget Password?</a>
+                    </div>
+                    <button ref={realignRef} style={{cursor: "pointer"}} className="submit">{loading? <SpinningWheel size={25}/>: "Login"}</button>
                 </div>
                 {/* :  */}
                 {/* <div className="inputs">
@@ -188,9 +223,10 @@ return <div className='tasks' style={{background: "#FF7081", padding:"10px", bor
                     <button className="submit">Register</button>
                 </div> */}
                 {/* } */}
+               
                 </form>
             </div>
-        </div>
+        </div>}
     </div>
   )
 }

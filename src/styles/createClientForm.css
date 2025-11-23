@@ -60,6 +60,13 @@
     padding: 4px;
     border: 1px solid lightgray;
 }
+.field input.border-left {
+ border-left: none !important;
+ border-top-left-radius: 0px !important;
+ border-bottom-left-radius: 0px !important;
+ border: none !important;
+ border-radius: none;
+}
 .btns-group{
     display: flex;
     justify-content: flex-end;

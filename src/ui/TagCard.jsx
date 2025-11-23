@@ -11,12 +11,13 @@ const icons = {
   AlertTriangle
 };
 
-const TagCard = ({icon, iconColor, tagName, numbers}) => {
+const TagCard = ({icon, iconColor, tagName, numbers, icon2, icon2Color}) => {
     const IconComponents = icons[icon];
   return (
     <div className="tag-card">
       <div className="icon">
-        <IconComponents color={iconColor} />
+        {icon2 ? <p  style={{color: icon2Color, fontSize:"25px"}}>{icon2}</p>: <IconComponents color={iconColor} /> }
+        
       </div>
       <div className="info">
         <p>{tagName}</p>

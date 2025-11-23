@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {User} from "lucide-react"
 import Button from './Button'
 import "../styles/createClientForm.css"
@@ -8,13 +8,24 @@ import {isAuthenticated} from "../auth/api"
 const CreateClientForm = ({onSuccess ,setUpdateClient, client, setClient}) => {
 
   const {user, token} = isAuthenticated();
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [phone, setPhone] = useState();
-  const [address, setAddress] = useState();
-  const [success, setSuccess] = useState();
-
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+ const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false)
+  const errorRef = useRef(null)
+ const successRef  = useRef(null)
   const createdBy = user._id;
+
+  const showError = () => {
+  if (!error) return ""
+
+return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padding:"10px", marginBottom:"9px",borderRadius:"10px"}}>
+   <p style={{margin: "0 auto"}}>{error}</p>
+</div>
+}
 
   const handleChange = (name) => (event) => {
     if(name == "name"){
@@ -30,11 +41,25 @@ const CreateClientForm = ({onSuccess ,setUpdateClient, client, setClient}) => {
 }
 
 const handleSubmit = async() => {
+  setLoading(true)
   const data = await updateClient(client._id, {name, email, phone, address, createdBy}, token);
   if(data.error){
-    console.log("error", data.error);
+    setLoading(false)
+    setError(data.error)
+        setTimeout(() => {
+    if (errorRef.current) {
+      errorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, 100);
+    // console.log("error", data.error);
   } else {
+    setLoading(false)
     setSuccess("client updated successfully ✅");
+        setTimeout(() => {
+    if (successRef.current) {
+      successRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, 100);
     onSuccess()
   }
 
@@ -119,7 +144,7 @@ useEffect(()=>{
             </div>
         </div>
  {/* </form> */}
-   {success && <p style={{ color: "green", marginTop: "10px" }}>{success}</p>}
+   {success && <p ref={successRef} style={{ color: "green", marginTop: "10px" }}>{success}</p>}
     </div>
     </div>
   )

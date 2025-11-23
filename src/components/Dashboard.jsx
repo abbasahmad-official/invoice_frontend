@@ -5,8 +5,11 @@ import { ArrowRight } from "lucide-react"
 import Card from '../ui/Card'
 import {isAuthenticated} from "../auth/api" 
 import { totalRevenue,  lastInvoices, pendingRevenue, totalClientsNumbers, overdueCount, allInvoicesCount, allUsersCount } from "../admin/api"
+import { useCurrency } from '../CurrencyContext'
+
 const Dashboard = ({ setActiveSection, setDirectLink }) => {
     const {user, token} = isAuthenticated()
+    const {currency} = useCurrency()
     const [paidRevenue, setPaidRevenue] = useState([]);
     const [remainingRevenue, setRemainingRevenue] = useState([]);
     const [clients, setClients] = useState();
@@ -50,9 +53,9 @@ const Dashboard = ({ setActiveSection, setDirectLink }) => {
                 </div>
             </div>
             <div className="card-container">
-                <Card icon="DollarSign" iconColor="green" title="Total Revenue" number={totalPrice.toFixed(2)} subtitle={`From ${paidRevenue.length} invoices`} dollar={true} />
-                <Card icon="Clock" iconColor="red" title="Pending Revenue" number={pendingPrice.toFixed(2)} subtitle={`From ${remainingRevenue.length} invoices`} dollar={true} />
-                <Card icon="Users" iconColor="blue" title="Total Clients" number={clients} subtitle="Active clients" />
+                <Card icon="DollarSign" icon2={user?.currency.symbol} iconColor="green" title="Total Revenue" number={(totalPrice * currency).toFixed(2)} subtitle={`From ${paidRevenue.length} invoices`} dollar={true} />
+                <Card icon="Clock" iconColor="red" title="Pending Revenue" number={(pendingPrice * currency).toFixed(2)} subtitle={`From ${remainingRevenue.length} invoices`} dollar={true} />
+                <Card icon="Users" iconColor="blue" title="Total Clients" number={clients} subtitle="Active clients"  />
                 <Card icon="TrendingUp" iconColor="red" title="Overdue Invoices" number={overdue} subtitle="Need attention" />
             </div>
             <div className="bottom-container">
@@ -72,7 +75,7 @@ const Dashboard = ({ setActiveSection, setDirectLink }) => {
                             </div>
                             <div className="middle">
 
-                                <p>${invoice.totalAmount}</p>
+                                <p>${(invoice.totalAmount * currency).toFixed(2)}</p>
                                 <p>{invoice.status}</p>
                             </div>
                         </div>
@@ -108,7 +111,7 @@ const Dashboard = ({ setActiveSection, setDirectLink }) => {
                     </div>
                     <div className="admin-overview">
                         <div className="info">
-                            <p>Admin Overview</p>
+                            <p>Organizational Overview</p>
                             <p>System-wide statistics</p>
                         </div>
                         <div className="items-container">
