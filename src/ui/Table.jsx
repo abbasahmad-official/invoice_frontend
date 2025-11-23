@@ -53,6 +53,7 @@ const Table = ({
   const [invoice, setInvoice] = useState({});
   const [loading, setLoading] = useState(false)
   const [invId, setInvId] = useState(null)
+  const [orgRemoveId, setOrgRemoveId] = useState(null)
   // const [currency, setCurrency]=  useState(null)
 const {currency, setCurrencyCode} = useCurrency({})
  
@@ -68,12 +69,15 @@ const {currency, setCurrencyCode} = useCurrency({})
 }, [])
 
   const removeItem = (mode, id) => {
+    setLoading(true)
     if (mode == "product") {
       removeProduct(id, token).then((data) => {
         if (data.error) {
           setError(data.error);
+           setLoading(false)
         } else {
           // console.log(data);
+          setLoading(false)
           onSuccess();
         }
       });
@@ -81,8 +85,10 @@ const {currency, setCurrencyCode} = useCurrency({})
       removeClient(id, token).then((data) => {
         if (data.error) {
           setError(data.error);
+           setLoading(false)
         } else {
           // console.log(data);
+           setLoading(false)
           onSuccess();
         }
       });
@@ -90,17 +96,22 @@ const {currency, setCurrencyCode} = useCurrency({})
       removeInvoice(id, token).then((data) => {
         if (data.error) {
           setError(data.error);
+           setLoading(false)
         } else {
           // console.log(data);
+           setLoading(false)
           onSuccess();
         }
       });
     } else if (mode == "org") {
+      setOrgRemoveId(id)
       removeOrg(id, token).then((data) => {
         if (data.error) {
           setError(data.error);
+           setLoading(false)
         } else {
           // console.log(data);
+           setLoading(false)
           onSuccess();
         }
       });
@@ -108,8 +119,10 @@ const {currency, setCurrencyCode} = useCurrency({})
       removeManager(id, token).then((data) => {
         if (data.error) {
           setError(data.error);
+           setLoading(false)
         } else {
           // console.log(data);
+           setLoading(false)
           onSuccess();
         }
       });
@@ -463,11 +476,15 @@ const {currency, setCurrencyCode} = useCurrency({})
                           }}
                         />
                         {/* <Download size={25} /> */}
-                        <Trash2
+                         {(loading && orgRemoveId == org?._id)? <SpinningWheel size={25}/>:<Trash2
+                          size={25}
+                          onClick={() => removeItem("org", org._id)}
+                        />}
+                        {/* <Trash2
                           size={25}
                           color="red"
                           onClick={() => removeItem("org", org._id)}
-                        />
+                        /> */}
                       </div>
                     </td>
                   </tr>
