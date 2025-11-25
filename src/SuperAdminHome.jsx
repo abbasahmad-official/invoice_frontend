@@ -114,9 +114,9 @@ const refreshLogo = async () => {
       {isMobile && isPanelOpen && (
         <div className="overlay" onClick={() => setIsPanelOpen(false)}></div>
       )}
-
+{/*  */}
       {/* Sidebar */}
-      <div style={{width:"fit-content"}} ref={panelRef} className={`side-panel ${isPanelOpen ? "show" : ""}`}>
+      <div  ref={panelRef} className={`side-panel ${isPanelOpen ? "show" : ""}`}>
         <div className="side-panel-header gap">
           <div className="logo">
             <img src={logo?.path ? API + logo.path : "./logo-invoice.png"} alt="my logo" width={50}/>

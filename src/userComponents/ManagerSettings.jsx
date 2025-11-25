@@ -4,6 +4,9 @@ import "../styles/setting.css";
 import { getCurrencies, saveCurrency } from "../admin/api";
 import { API } from "../config";
 import Select from "react-select";
+import Button from "../ui/Button";
+import SpinningWheel from "../ui/SpinningWheel";
+import Success from "../ui/Success";
 
 const ManagerSettings = ({
   directLink = "",
@@ -14,6 +17,9 @@ const ManagerSettings = ({
   const { user, token } = isAuthenticated();
   const [darkMode, setDarkMode] = useState(true);
   const [currrencies, setCurrencies] = useState([]);
+    const [loading, setLoading] = useState(false)
+      const [error, setError] = useState(null)
+      const [success, setSuccess] = useState(null)
 
   useEffect(() => {
     fetchCurrencies();
@@ -26,9 +32,13 @@ const ManagerSettings = ({
   };
 
   const handleSave = async () => {
+    setLoading(true)
+    setError(null)
+    setSuccess(null)
     const updateCurrency = await saveCurrency(user?._id, selected?.value);
     if (updateCurrency.error) {
       console.log("currency error");
+      setError(updateCurrency.error)
     } else {
       if (updateCurrency) {
         // Safely parse JWT from localStorage
@@ -45,10 +55,15 @@ const ManagerSettings = ({
           jwt.user.currency = updateCurrency; // set the new currency
           localStorage.setItem("jwt", JSON.stringify(jwt));
           console.log("LocalStorage updated with new user currency!");
-          alert("Settings saved successfully!");
+          setSuccess("Currency updated successfully")
+          setTimeout(()=>setSuccess(null) ,2000)
+          // alert("Settings saved successfully!");
           refreshLogo()
+          setLoading(false)
         } else {
+          setLoading(false)
           console.warn("JWT found but missing user data");
+          return
         }
       }
     }
@@ -74,6 +89,7 @@ const ManagerSettings = ({
 
   return (
     <div className="settings-container">
+      {success && <Success message={success}/>}
       <h2 className="settings-title">Settings</h2>
       <p className="settings-subtitle">
         Manage system appearance and preferences
@@ -98,7 +114,7 @@ const ManagerSettings = ({
         </div>
 
         <button className="save-btn" onClick={handleSave}>
-          Save Changes
+          {loading?<SpinningWheel/>:"Save Changes"}
         </button>
       </div>
     </div>

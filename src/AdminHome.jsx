@@ -103,7 +103,7 @@ if(part == "invoices"){
   }
 
   const refreshLogo = async () => {
-    const data = await getLogo(user._id, token);
+    const data = await getLogo(user.organization, token);
     if (!data.error) {
       setLogo(data);
     }

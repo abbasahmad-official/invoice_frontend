@@ -4,6 +4,10 @@ import "./styles/setting.css";
 import {Edit, Trash2, StopCircle} from "lucide-react"
 import {uploadLogo, removeLogo, getLogo} from "./admin/api"
 import { API } from "./config";
+import Button from "./ui/Button"
+import Success from "./ui/Success";
+import SpinningWheel from "./ui/SpinningWheel";
+
 
 const SuperAdminSetting = ({ directLink = "", activeSection = "", setDirectLink, refreshLogo }) => {
   const { user, token } = isAuthenticated();
@@ -16,6 +20,10 @@ const SuperAdminSetting = ({ directLink = "", activeSection = "", setDirectLink,
   const inputRef = useRef(null)
   const [companyName, setCompanyName] =useState("")
   const [isReadOnly, setIsReadOnly] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [success, setSuccess] = useState(null)
+  const [logoRemove, setLogoRemove] = useState(false)
   // const [isHovered, setIshovered] = useState(false)
 
 useEffect(()=>{
@@ -54,7 +62,8 @@ useEffect(()=>{
   }
 
   const handleSave = async() => {
-   
+    // console.log(logo)
+    setLoading(true)
     const formData = new FormData()
     formData.append("logo",logo)
     formData.append("organization", user._id)
@@ -63,25 +72,50 @@ useEffect(()=>{
     const data = await uploadLogo(formData, token)
     if(data.error){
       console.log(data.error)
+      setSuccess(null)
+      setError(data.error)
+      setLoading(false)
     } else {
-      alert("Settings saved successfully!");
+      // alert("Settings saved successfully!");
+      setIsReadOnly(true)
       refreshLogo()
+      setError(null)
+      setSuccess(data.message)
+      setTimeout(()=>{
+        setSuccess(null)
+      },2000)
+      setLoading(false)
     }
   };
 
+  const successTimeout = () =>{
+    setTimeout(()=>{
+      setSuccess(null)
+    },2000)
+  }
+
 const removeLogoButton = async() => {
   try{
+    setLogoRemove(true)
   const data = await removeLogo(user._id, token)
   if(data.error && data.status === 404){
+    setSuccess(null)
     setImagePreviewUrl(null)
     setCompanyName("")
+    setError(data.error)
+    setLogoRemove(false)
   } else {
+    setError(null)
     console.log(data.message)
     setImagePreviewUrl(null)
     setCompanyName("")
     refreshLogo() 
+    setSuccess(data.message)
+    successTimeout()
+    setLogoRemove(false)
   }
 } catch(error){
+  setLogoRemove(false)
   console.log(error)
 }
 }
@@ -98,6 +132,7 @@ if(inputRef?.current?.readOnly == true){
 
   return (
     <div className="settings-container">
+      {success && <Success message={success}/>}
       <h2 className="settings-title">Settings</h2>
       <p className="settings-subtitle">Manage system appearance and preferences</p>
 
@@ -137,9 +172,9 @@ if(inputRef?.current?.readOnly == true){
                 <span className="upload-plus">+</span>
               )}
             </label>
-           <div style={{display: "flex", justifyContent: "flex-end", cursor: "pointer"}}>
+           {/* <div style={{display: "flex", justifyContent: "flex-end", cursor: "pointer"}}>
                 {imagePreviewUrl &&<Trash2 size={18} onClick={removeLogoButton}/>}
-        </div>
+        </div> */}
           </div>
         </div>
         
@@ -150,12 +185,16 @@ if(inputRef?.current?.readOnly == true){
             <p className="settings-label">Company Name</p>
             <p className="settings-description">Enter your company name</p>
           </div>
-          <div style={{display: "flex", alignItems:"center", position:"relative"}}>
+            <div className="input-company" style={{display: "flex", alignItems:"center", position:"relative"}}>
           <input ref={inputRef} readOnly={isReadOnly} value={companyName} onChange={handleChange} type="text"  style={{borderRadius: "10px", padding:"5px", outline: "none"}} />
-         <div style={{position:"absolute", top: "104%", right:"0"}} >
+               <div className="company-name" >
+          {isReadOnly && <Button onClick={()=>setIsReadOnly(false)} text={"Edit"} icon="Edit"  blackHover={true}  />}
+          <Button loading={logoRemove}  onClick={removeLogoButton} icon="Trash2" text={"Remove"} blackHover={true} />
+          </div>
+         {/* <div style={{position:"absolute", top: "104%", right:"0"}} >
           {isReadOnly ?<Edit size={20}  color="grey" cursor={"pointer"} onClick={changeName}/>:
           <StopCircle size={20}  color="red" cursor={"pointer"} onClick={changeName}/>}
-          </div>
+          </div> */}
           </div>
           {/* <label className="switch">
             <input
@@ -190,7 +229,7 @@ if(inputRef?.current?.readOnly == true){
      
 
         <button className="save-btn" onClick={handleSave}>
-          Save Changes
+          {loading?<SpinningWheel size={25}/>:"Save Changes"}
         </button>
       {/* </div> */}
     </div>

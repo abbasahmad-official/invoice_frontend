@@ -6,6 +6,9 @@ import {uploadLogo, removeLogo, getLogo, getCurrencies, saveCurrency} from "../a
 import { API } from "../config";
 import Select from "react-select";
 import { useCurrency } from "../CurrencyContext";
+import SpinningWheel from "../ui/SpinningWheel"
+import Success from "../ui/Success"
+import Button from "../ui/Button";
 
 const OrganizationalSettings = ({ directLink = "", activeSection = "", setDirectLink , refreshLogo}) => {
   const { user, token } = isAuthenticated();
@@ -19,6 +22,10 @@ const OrganizationalSettings = ({ directLink = "", activeSection = "", setDirect
   const inputRef = useRef(null)
   const [companyName, setCompanyName] =useState("")
   const [isReadOnly, setIsReadOnly] = useState(true)
+   const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
+    const [success, setSuccess] = useState(null)
+    const [logoRemove, setLogoRemove] = useState(false)
  
 
 useEffect(()=>{
@@ -48,27 +55,9 @@ useEffect(()=>{
 
   const fetchCurrencies = async() =>{
    const data =  await getCurrencies()
-  // console.log(data)
    setCurrencies(data)
   }
 
-//   const [currencies, setCurrencies] = useState([])
-// const fetchCurrencies =async () => {
-//  const response = await fetch(`https://restcountries.com/v3.1/all?fields=currencies`, {
-//   method:"GET"
-//  })
-
-//  let data = await response.json()
-//   for(let i=0; i<2; i++) {
-//   console.log(data[i])
-//  }
-//  for(const country of data){
-
-  // setCurrencies(data )
-//   for(const [code, info] of Object.entries(country.currencies))
-//  console.log(info.name)
-//  }
-// }
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -84,7 +73,10 @@ useEffect(()=>{
   }
 
   const handleSave = async() => {
-   
+   setLoading(true)
+   setSuccess(null)
+   setError(null)
+
     const formData = new FormData()
     formData.append("logo",logo)
     formData.append("organization", user.organization)
@@ -92,22 +84,38 @@ useEffect(()=>{
     
     // console.log(formData);
     const data = await uploadLogo(formData, token)
-    const updateCurrency = await  saveCurrency(user?._id ,selected?.value )
+       if(data.error){
+      console.log(data.error)
+      setError(data.error)
+      setLoading(false)
+
+    } else {
+
+     const updateCurrency = await  saveCurrency(user?._id ,selected?.value )
+     if(!updateCurrency){
+      console.log("No currency found")
+      setError("No currency found")
+      return
+     }
     if(updateCurrency.message){
-      console.log("currencyu updated")
+        setSuccess(updateCurrency.message)
+
     } else if(updateCurrency.error){
+      
+      setError(updateCurrency.error)
       console.log(updateCurrency.error)
+      setLoading(false)
+      return
     }
-   if (updateCurrency) {
+  
   // Safely parse JWT from localStorage
   const storedJwt = localStorage.getItem("jwt");
   if (!storedJwt) {
     console.warn("No JWT found in localStorage");
     return;
-  }
-
+    }
   const jwt = JSON.parse(storedJwt);
-
+// 
   // ✅ Update only if user object exists
   if (jwt.user) {
     jwt.user.currency = updateCurrency; // set the new currency
@@ -116,30 +124,57 @@ useEffect(()=>{
     console.log("LocalStorage updated with new user currency!");
   } else {
     console.warn("JWT found but missing user data");
+    return
   }
 }
-    
     if(data.error){
       console.log(data?.error)
+      setError(data.error)
+      setLoading(false)
     } else {
-      alert("Settings saved successfully!");
+      setSuccess("setting saved successfully")
+      successTimeout()
       refreshLogo()
+      setIsReadOnly(true)
+      setLoading(false)
     }
+
   };
+
+  
+
+  const successTimeout = () =>{
+    setTimeout(()=>{
+      setSuccess(null)
+    },2000)
+  }
+    
 
 const removeLogoButton = async() => {
   try{
+    setLogoRemove(true)
+    setError(null)
+    setSuccess(null)
+    
   const data = await removeLogo(user.organization, token)
-  
   if(data.error && data.status === 404){
+    setSuccess(null)
     setImagePreviewUrl(null)
     setCompanyName("")
+    setError(data.error)
+    setLogoRemove(false)
   } else {
+    setError(null)
     console.log(data.message)
     setImagePreviewUrl(null)
     setCompanyName("")
+    refreshLogo() 
+    setSuccess(data.message)
+    successTimeout()
+    setLogoRemove(false)
   }
 } catch(error){
+  setLogoRemove(false)
   console.log(error)
 }
 }
@@ -171,7 +206,7 @@ const options= currrencies?.map(item=>({
   
   return (
     <div className="settings-container">
-      
+      {success && <Success message={success} />}
       <h2 className="settings-title">Settings</h2>
       <p className="settings-subtitle">Manage system appearance and preferences</p>
 
@@ -211,9 +246,9 @@ const options= currrencies?.map(item=>({
                 <span className="upload-plus">+</span>
               )}
             </label>
-           <div style={{display: "flex", justifyContent: "flex-end", cursor: "pointer"}}>
+           {/* <div style={{display: "flex", justifyContent: "flex-end", cursor: "pointer"}}>
                 {imagePreviewUrl &&<Trash2 size={18} onClick={removeLogoButton}/>}
-        </div>
+        </div> */}
           </div>
         </div>
         
@@ -224,12 +259,16 @@ const options= currrencies?.map(item=>({
             <p className="settings-label">Company Name</p>
             <p className="settings-description">Enter your company name</p>
           </div>
-          <div style={{display: "flex", alignItems:"center", position:"relative"}}>
+          <div className="input-company" style={{display: "flex", alignItems:"center", position:"relative"}}>
           <input ref={inputRef} readOnly={isReadOnly} value={companyName} onChange={handleChange} type="text"  style={{borderRadius: "10px", padding:"5px", outline: "none"}} />
-         <div style={{position:"absolute", top: "104%", right:"0"}} >
+               <div className="company-name" >
+          {isReadOnly && <Button onClick={()=>setIsReadOnly(false)} text={"Edit"} icon="Edit"  blackHover={true}  />}
+          <Button loading={logoRemove}  onClick={removeLogoButton} icon="Trash2" text={"Remove"} blackHover={true} />
+          </div>
+         {/* <div style={{position:"absolute", top: "104%", right:"0"}} >
           {isReadOnly ?<Edit size={20}  color="grey" cursor={"pointer"} onClick={changeName}/>:
           <StopCircle size={20}  color="red" cursor={"pointer"} onClick={changeName}/>}
-          </div>
+          </div> */}
           </div>
           {/* <label className="switch">
             <input
@@ -287,7 +326,7 @@ const options= currrencies?.map(item=>({
               
 
         <button className="save-btn" onClick={handleSave}>
-          Save Changes
+          {loading?<SpinningWheel size={25}/>:"Save Changes"}
         </button>
        
         {/* <a href="https://restcountries.com/v3.1/all?fields=currencies

@@ -1020,7 +1020,6 @@ export const uploadLogo = (formData, token) => {
     return fetch(`${API}/upload`, {
     method: 'POST',
     headers: {
-      
       Authorization: `Bearer ${token}`
     },
     body:formData

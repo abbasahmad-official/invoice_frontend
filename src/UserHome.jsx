@@ -195,7 +195,8 @@ const UserHome = () => {
           <div
             className="feature gap"
             style={isActive("setting")}
-            onClick={() => {setActiveSection("setting")
+            onClick={() => {
+              setActiveSection("setting")
               setIsPanelOpen(false)
             }}
           >

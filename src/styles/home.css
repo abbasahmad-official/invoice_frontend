@@ -49,6 +49,9 @@
     /* margin-top: 40px !important; */
     border-right: 1px solid lightgrey;
     height: calc(100vh - 140px);
+     overflow-y: auto;
+    max-height: 100%;
+    scroll-behavior: auto;
     /* background-color: wheat; */
     
 }
@@ -109,4 +112,20 @@
   cursor: pointer;
   z-index: 1100; /* above panel */
 }
+}
+
+.side-panel-user {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* already using gap? keep it */
+  flex-wrap: wrap; /* allow items to wrap instead of overflowing */
+}
+.side-panel-user .info {
+  flex: 1; /* take remaining width */
+  min-width: 0; /* allow text to shrink */
+}
+.side-panel-user .info p {
+  margin: 0;
+  overflow-wrap: anywhere; /* wrap long email */
+  word-break: break-word; /* fallback */
 }

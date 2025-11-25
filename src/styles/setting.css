@@ -23,6 +23,7 @@
   padding: 24px 28px;
   margin-bottom: 24px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  height: fit-content;
 }
 
 .settings-section-title {
@@ -229,3 +230,102 @@ input:checked + .slider:before {
   opacity: 1;
 }
 
+.company-name{
+  display: flex !important;
+  gap: 10px;
+  margin-top: 10px;
+  position: absolute;
+  top: 100%;
+
+}
+
+
+/* ============================== */
+/* RESPONSIVE FIXES FOR MOBILE */
+/* ============================== */
+
+@media (max-width: 768px) {
+  .settings-container {
+    padding: 18px;
+    /* height: fit-content; */
+  }
+
+  .settings-card {
+    padding: 18px;
+   height: fit-content;
+  }
+
+  .settings-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  /* Upload box centered + resized */
+  .upload-container {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .custom-upload-box {
+    width: 70px;
+    height: 70px;
+  }
+
+  /* Company Name Input responsiveness */
+  .settings-row input[type="text"] {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  /* Edit / Stop Icon positioning fixed */
+  .settings-row > div:last-child {
+    width: 100%;
+    position: relative;
+  }
+
+  .settings-row > div:last-child > div {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* Save button full width on mobile */
+  .save-btn {
+    width: 100%;
+    padding: 12px;
+  }
+  .input-company{
+  position: absolute;
+  /* left: 0%; */
+  top: 10%;
+  /* flex-direction: column; */
+
+}
+  .company-name{
+   margin-top: 34px;
+  }
+}
+
+@media (max-width: 480px) {
+  .custom-upload-box {
+    width: 60px;
+    height: 60px;
+  }
+
+  .upload-plus {
+    font-size: 28px;
+  }
+}
+.upload-container {
+  justify-content: center;
+}
+
+.input-company{
+  position: absolute;
+  left: 0%;
+  top: 10%;
+  /* flex-direction: column; */
+
+}
