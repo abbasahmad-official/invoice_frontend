@@ -191,42 +191,15 @@ if(inputRef?.current?.readOnly == true){
           {isReadOnly && <Button onClick={()=>setIsReadOnly(false)} text={"Edit"} icon="Edit"  blackHover={true}  />}
           <Button loading={logoRemove}  onClick={removeLogoButton} icon="Trash2" text={"Remove"} blackHover={true} />
           </div>
-         {/* <div style={{position:"absolute", top: "104%", right:"0"}} >
-          {isReadOnly ?<Edit size={20}  color="grey" cursor={"pointer"} onClick={changeName}/>:
-          <StopCircle size={20}  color="red" cursor={"pointer"} onClick={changeName}/>}
-          </div> */}
+     
           </div>
-          {/* <label className="switch">
-            <input
-              type="checkbox"
-              checked={darkMode}
-              onChange={() => setDarkMode(!darkMode)}
-            />
-            <span className="slider"></span>
-          </label> */}
+        
         </div>
 
-        {/* <div className="settings-row">
-          <div>
-            <p className="settings-label">Dark Mode</p>
-            <p className="settings-description">Enable or disable dark theme</p>
-          </div>
-          <label className="switch">
-            <input
-              type="checkbox"
-              checked={darkMode}
-              onChange={() => setDarkMode(!darkMode)}
-            />
-            <span className="slider"></span>
-          </label>
-        </div> */}
+   
       </div>
 
-      {/* Preferences Section */}
-      {/* <div className="settings-card"> */}
-        {/* <h3 className="settings-section-title">Preferences</h3> */}
 
-     
 
         <button className="save-btn" onClick={handleSave}>
           {loading?<SpinningWheel size={25}/>:"Save Changes"}

@@ -102,18 +102,22 @@ const ManagerSettings = ({
         <div className="settings-row">
           <p className="settings-label">Currency</p>
 
-          <div>
+          <div className="selection">
             <p>{selected?.name}</p>
+            <div className="selection-component">
+
             <Select
               value={selected}
               onChange={setSelected}
               placeholder="Select Currency"
               options={options}
-            />
+              />
+              </div>
           </div>
+
         </div>
 
-        <button className="save-btn" onClick={handleSave}>
+        <button className="save-btn select-padding" onClick={handleSave}>
           {loading?<SpinningWheel/>:"Save Changes"}
         </button>
       </div>

@@ -329,3 +329,37 @@ input:checked + .slider:before {
   /* flex-direction: column; */
 
 }
+
+
+/* @media (max-width: 400px) {
+  .selection {
+    background-color: aqua;
+    width: 200px;
+  }
+} */
+
+.selection-component {
+  min-width: 150px; /* desktop width */
+}
+
+/* Media query for small screens */
+@media (max-width: 440px) {
+  .selection {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px;
+    align-items: flex-start;
+    width: 100%;
+    /* background-color: aqua; */
+    /* padding-bottom: 70px; */
+    align-items: flex-end;
+  }
+
+  .selection-component {
+    padding-top: 70px;
+   
+  }
+  .select-padding{
+    margin-top: 35px;
+  }
+}

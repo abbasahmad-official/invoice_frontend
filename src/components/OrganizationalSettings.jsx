@@ -317,15 +317,22 @@ const options= currrencies?.map(item=>({
             <option value="USD">USD</option>
             <option value="EUR">EUR</option> */}
           {/* </select> */}
-          <div>
-       <p>{selected?.name}</p>
-          <Select value={selected} onChange={setSelected}   placeholder="Select Currency" options={options}/>
+          <div className="selection">
+            <p>{selected?.name}</p>
+            <div className="selection-component">
 
+            <Select
+              value={selected}
+              onChange={setSelected}
+              placeholder="Select Currency"
+              options={options}
+              />
+              </div>
           </div>
         </div>
               
 
-        <button className="save-btn" onClick={handleSave}>
+        <button className="save-btn select-padding" onClick={handleSave}>
           {loading?<SpinningWheel size={25}/>:"Save Changes"}
         </button>
        
