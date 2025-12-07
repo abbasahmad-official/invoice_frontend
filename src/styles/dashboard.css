@@ -54,6 +54,7 @@
 .recent-invoices-container{
     display: flex;
     flex-direction: column;
+    gap: 10px;
     /* align-items: center; */
     padding: 14px;
     /* border-bottom: 1px solid lightgrey; */

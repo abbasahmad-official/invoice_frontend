@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { isAuthenticated } from "./auth/api";
 import "./styles/setting.css";
 import {Edit, Trash2, StopCircle} from "lucide-react"
-import {uploadLogo, removeLogo, getLogo} from "./admin/api"
+import {uploadLogo, removeLogo, getLogo, getLogoPic} from "./admin/api"
 import { API } from "./config";
 import Button from "./ui/Button"
 import Success from "./ui/Success";
@@ -28,10 +28,15 @@ const SuperAdminSetting = ({ directLink = "", activeSection = "", setDirectLink,
 
 useEffect(()=>{
   fetchLogo();
+  fetchLogoPic()
 }, [])
+
+
+
  const fetchLogo = async () => {
     try {
       const data = await getLogo(user._id, token);
+      // console.log(data)
       if(data?.status === 404){
         setCompanyName("SimplyBill")
       }
@@ -39,14 +44,23 @@ useEffect(()=>{
         console.log(API + data.path)
         setCompanyName(data?.companyName)
         // setTakeLogo(data)
-        setImagePreviewUrl(API + data.path); // API is your base URL
+        // setImagePreviewUrl(API + data.path); // API is your base URL
       }
     } catch (err) {
       console.error("Error fetching logo:", err);
     }
   };
-
-
+const fetchLogoPic = async () => {
+  try {
+    const blob = await getLogoPic(user._id, token);
+     const imageUrl = URL.createObjectURL(blob);
+    // console.log(imageUrl)
+    setImagePreviewUrl(imageUrl);
+  } catch (error) {
+    console.error("Failed to fetch logo pic:", error);
+    setImagePreviewUrl(null);
+  }
+};
 
   const handleLogoChange = (e) => {
     const file = e.target.files[0];
@@ -150,7 +164,7 @@ if(inputRef?.current?.readOnly == true){
           </div>
 
           {/* Custom Upload Box */}
-          <div className="upload-container">
+          <div className={`upload-container ${isReadOnly? "read-only" : ""}`} >
           
 
             <input
@@ -186,7 +200,7 @@ if(inputRef?.current?.readOnly == true){
             <p className="settings-description">Enter your company name</p>
           </div>
             <div className="input-company" style={{display: "flex", alignItems:"center", position:"relative"}}>
-          <input ref={inputRef} readOnly={isReadOnly} value={companyName} onChange={handleChange} type="text"  style={{borderRadius: "10px", padding:"5px", outline: "none"}} />
+          <input ref={inputRef} className={`${isReadOnly? "read-only" : ""}`} readOnly={isReadOnly} value={companyName} onChange={handleChange} type="text"  style={{borderRadius: "10px", padding:"5px", outline: "none"}} />
                <div className="company-name" >
           {isReadOnly && <Button onClick={()=>setIsReadOnly(false)} text={"Edit"} icon="Edit"  blackHover={true}  />}
           <Button loading={logoRemove}  onClick={removeLogoButton} icon="Trash2" text={"Remove"} blackHover={true} />

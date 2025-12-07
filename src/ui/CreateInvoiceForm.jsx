@@ -89,7 +89,8 @@ return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padd
   };
 
   const handleSubmit = async (mode) => {
-  
+  setSuccess(null)
+  setError(null)
     
     const cleanedItems = form.items.filter(
       (item) => item.productId && item.quantity > 0

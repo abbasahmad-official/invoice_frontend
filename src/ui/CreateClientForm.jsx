@@ -43,6 +43,8 @@ return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padd
 }
 
 const handleSubmit = async() => {
+  setError(null)
+  setSuccess(null)
   setLoading(true)
   const data =  await createClient({name, email, phone, address, createdBy, organization: user.organization}, token);
   if(data.error){

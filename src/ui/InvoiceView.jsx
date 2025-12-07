@@ -21,10 +21,7 @@ const InvoiceView = ({ setViewInvoice, seeInvoice }) => {
   const [loading, setLoading] = useState(false);
   const [loadingSend, setLoadingSend] = useState(false);
   const [initialLoad,setInitialLoading] = useState(false)
-const loadCSS = async (path) => {
-  const res = await fetch(path);
-  return await res.text();
-};
+
 
 useEffect(()=>{
   if(seeInvoice){
@@ -119,9 +116,8 @@ console.log("reachedEnd")
         console.log(error);
         setLoadingSend(false)
       }
-
-      //  console.log(data)
     }
+
   };
   return (
     <div className="invoice-single-page">
@@ -138,14 +134,7 @@ console.log("reachedEnd")
           />
         </div>
         <div style={{ display: "flex", gap: "10px" }}>
-         {/* { seeInvoice &&<PDFDownloadLink
-            document={<InvoicePDF seeInvoice={seeInvoice} />}
-            fileName={`invoice_${seeInvoice.invoiceNumber}.pdf`}
-          >
-            {({ loading }) =>
-              loading ? "Loading document..." : "Download PDF"
-            }
-          </PDFDownloadLink>} */}
+        
           <div  onClick={downloadPDF}>
           <Button loading={loading} blackHover={true} icon="Download" text="PDF" backgroundColor="#000" color="#fff" />
         </div>
@@ -162,118 +151,13 @@ console.log("reachedEnd")
         </div>
       </div>
 
-      <div >
-        {/* <div className="invoice-content"> */}
+      <div className="invoice-wrapper">
 {initialLoad? <SpinningWheel size={60}/> :<iframe
     ref={invoiceRef}
     style={{ width: "100%", height: "1000px", border: "none" }}
     srcDoc={htmlContent} // this is your fetched HTML string
     title="Invoice Preview"
   />}
-{/* </div> */}
-
-        {/* --- Modern Header --- */}
-   {/* <div className="invoice-template-wrapper">
-
-  {/* HEADER BLUE BAND */}
-  {/* <div className="inv-header">
-    <div className="inv-left">
-      <h2 className="inv-logo-text"><img src="" alt="logo" /></h2>
-
-      <p className="inv-to-title">Invoice To:</p>
-      <p className="inv-client-name">{seeInvoice.client?.name}</p>
-      <p className="inv-client-role">
-        {seeInvoice.client?.email}
-      </p>
-    </div>
-
-    <div className="inv-right">
-      <h1 className="inv-title">INVOICE</h1>
-
-      <p><strong>Invoice No:</strong> #{seeInvoice.invoiceNumber}</p>
-      <p><strong>Due Date:</strong> {formatDate(seeInvoice.dueDate)}</p>
-      <p><strong>Invoice Date:</strong> {formatDate(seeInvoice.createdAt)}</p>
-    </div>
-  </div>
-
-  {/* ADDRESS BAR */}
-  {/* <div className="inv-address-bar">
-    <span className="inv-icon">📍</span>
-    <span>{seeInvoice.client?.address || "No address provided"}</span>
-  </div>
-
-  {/* CONTACT + PAYMENT INFO */}
-  {/* <div className="inv-info-block">
-    <div className="inv-contact">
-      <p><strong>Phone:</strong> {seeInvoice.client?.phone}</p>
-      <p><strong>Email:</strong> {seeInvoice.client?.email}</p>
-      <p><strong>Address:</strong> {seeInvoice.client?.address}</p>
-    </div>
-
-    <div className="inv-payment">
-      <p><strong>Account No:</strong> {seeInvoice.accountNo || "N/A"}</p>
-      <p><strong>Account Name:</strong> {seeInvoice.client?.name}</p>
-      <p><strong>Branch Name:</strong> {seeInvoice.branchName || "Main Branch"}</p>
-    </div>
-  </div>
-
-  {/* ITEMS TABLE */}
-  {/* <table className="inv-table">
-    <thead>
-      <tr>
-        <th>DESCRIPTION</th>
-        <th>SUBTOTAL</th>
-        <th>QTY</th>
-        <th>SUBTOTAL</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      {seeInvoice.items?.map((item, i) => (
-        <tr key={i}>
-          <td>{item.productId?.name}</td>
-          <td>Rs {item.price.toFixed(2)}</td>
-          <td>{item.quantity}</td>
-          <td>Rs {(item.quantity * item.price).toFixed(2)}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-
-  {/* TERMS + SUMMARY */}
-  {/* <div className="inv-bottom-section">
-    <div className="inv-terms">
-      <h4>TERM AND CONDITIONS</h4>
-      <p>
-        Please send payment within 30 days of receiving this invoice.  
-        A 10% interest fee applies on late invoices.
-      </p>
-
-      <h4 style={{ marginTop: "20px" }}>THANK YOU FOR YOUR BUSINESS</h4>
-
-      <p>📞 {seeInvoice.client?.phone}</p>
-      <p>📧 {seeInvoice.client?.email}</p>
-      <p>📍 {seeInvoice.client?.address}</p>
-    </div>
-
-    <div className="inv-summary">
-      <p><span>Sub-total:</span> Rs {subtotal}</p>
-      <p><span>Discount:</span> Rs {discountAmount}</p>
-      <p><span>Tax:</span> Rs {taxAmount}</p>
-
-      <p className="inv-total"><span>Total:</span> Rs {total}</p>
-    </div>
-  </div>
-
-  {/* SIGNATURE AREA */}
-  {/* <div className="inv-sign">
-    <div>
-      <p className="inv-sign-line"></p>
-      <p className="inv-sign-name">Administrator</p>
-    </div>
-  </div>
-</div> */} 
-
       </div>
     </div>
   );

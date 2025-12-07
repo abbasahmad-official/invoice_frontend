@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { User, Key, Lock, Eye } from "lucide-react";
 import Button from "./Button";
+import Plan from "./Plan"; // import Plan component
 import "../styles/createClientForm.css";
 import { createOrg } from "../admin/api";
 import { isAuthenticated } from "../auth/api";
@@ -11,6 +12,7 @@ const CreateOrgForm = ({ onSuccess, setCreateOrg }) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [plan, setPlan] = useState("All Plans"); // new state for Plan
   const [success, setSuccess] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -24,8 +26,7 @@ const CreateOrgForm = ({ onSuccess, setCreateOrg }) => {
   const passwordRef = useRef(null);
 
   const showError = () => {
-    if (!error) return "";
-
+    if (!error) return null;
     return (
       <div
         ref={errorRef}
@@ -45,27 +46,38 @@ const CreateOrgForm = ({ onSuccess, setCreateOrg }) => {
   const handleChange = (name) => (event) => {
     setSuccess(null);
     setError(null);
-    if (name == "name") {
-      setName(event.target.value);
-    } else if (name == "email") {
-      setEmail(event.target.value);
-    } else if (name == "phone") {
-      setPhone(event.target.value);
-    } else if (name == "address") {
-      setAddress(event.target.value);
-    } else if (name == "newPassword") {
-      setNewPassword(event.target.value);
-    } else if (name == "confirmPassword") {
-      setConfirmPassword(event.target.value);
+    switch (name) {
+      case "name":
+        setName(event.target.value);
+        break;
+      case "email":
+        setEmail(event.target.value);
+        break;
+      case "phone":
+        setPhone(event.target.value);
+        break;
+      case "address":
+        setAddress(event.target.value);
+        break;
+      case "newPassword":
+        setNewPassword(event.target.value);
+        break;
+      case "confirmPassword":
+        setConfirmPassword(event.target.value);
+        break;
+      default:
+        break;
     }
   };
 
   const handleSubmit = async () => {
+    setSuccess(null)
+    setError(null)
     setLoading(true);
     if (newPassword.length > 0 && confirmPassword.length > 0) {
-      if (newPassword == confirmPassword) {
+      if (newPassword === confirmPassword) {
         const data = await createOrg(
-          { name, email, phone, address, createdBy, newPassword },
+          { name, email, phone, address, createdBy, newPassword, plan:plan=="All Plans"?"Free":plan },
           token
         );
         if (data.error) {
@@ -74,71 +86,54 @@ const CreateOrgForm = ({ onSuccess, setCreateOrg }) => {
           setError(data.error);
           setTimeout(() => {
             if (errorRef.current) {
-              errorRef.current.scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-              });
+              errorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
             }
           }, 100);
-          // console.log("error", data.error);
         } else {
           setLoading(false);
-          // console.log(data)
           setError(null);
           setSuccess(data.message);
           setTimeout(() => {
             if (successRef.current) {
-              successRef.current.scrollIntoView({
-                behavior: "smooth",
-                block: "center",
-              });
+              successRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
             }
           }, 100);
-          // setError(null)
           setAddress("");
           setEmail("");
           setName("");
           setPhone("");
           setNewPassword("");
           setConfirmPassword("");
+          setPlan("All Plans");
           onSuccess();
         }
       } else {
         setLoading(false);
         setError("Password does not match");
-        // setNotMatched("Password does not match")
         setTimeout(() => {
           if (errorRef.current) {
-            errorRef.current.scrollIntoView({
-              behavior: "smooth",
-              block: "center",
-            });
+            errorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
           }
         }, 100);
-        console.log("password does not match");
       }
     } else {
       setLoading(false);
       setError("No password entered");
       setTimeout(() => {
         if (errorRef.current) {
-          errorRef.current.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
+          errorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
         }
       }, 100);
-      console.log("no password entered");
     }
   };
 
-  const showPassword = async (e) => {
-    setShow((prev) => !prev);
-  };
+  const showPassword = () => setShow((prev) => !prev);
 
   return (
     <div className="client-form-container">
+      
       <div className="container">
+        {/* header */}
         <div className="client-create-header">
           <div onClick={() => setCreateOrg(false)}>
             <Button
@@ -154,73 +149,58 @@ const CreateOrgForm = ({ onSuccess, setCreateOrg }) => {
             <p>Enter client information for invoicing</p>
           </div>
         </div>
-        {/* <form> */}
 
+        {/* Basic Info */}
         <div className="basic-info">
           {showError()}
           <div className="head">
             <p>
-              {" "}
               <User size={15} /> Basic Information
             </p>
             <p>Client's primary contact details</p>
           </div>
           <div className="fields">
             <div className="field">
-              <label htmlFor="client-name"> Organization Name</label>
-              <input
-                type="text"
-                id="client-name"
-                value={name}
-                onChange={handleChange("name")}
-              />
+              <label htmlFor="client-name">Organization Name</label>
+              <input type="text" id="client-name" value={name} onChange={handleChange("name")} />
             </div>
             <div className="field">
-              <label htmlFor="email">Email </label>
-              <input
-                type="text"
-                id="email"
-                value={email}
-                onChange={handleChange("email")}
-              />
+              <label htmlFor="email">Email</label>
+              <input type="text" id="email" value={email} onChange={handleChange("email")} />
             </div>
             <div className="field">
-              <label htmlFor="phone-no">Phone-no </label>
-              <input
-                type="text"
-                id="phone-no"
-                value={phone}
-                onChange={handleChange("phone")}
-              />
+              <label htmlFor="phone-no">Phone-no</label>
+              <input type="text" id="phone-no" value={phone} onChange={handleChange("phone")} />
+            </div>
+
+            {/* Plan dropdown field */}
+            <div className="field">
+              <label htmlFor="plan">Plan</label>
+              <Plan text={plan} scroll={false} setForm={null} form={null} setStatus={setPlan} />
             </div>
           </div>
         </div>
 
+        {/* Address */}
         <div className="basic-info adress-info">
           <div className="head">
             <p>
-              {" "}
-              <User size={15} /> Adress Information
+              <User size={15} /> Address Information
             </p>
             <p>Client's billing address</p>
           </div>
           <div className="fields">
             <div className="field">
               <label htmlFor="adress">Full Address</label>
-              <input
-                type="text"
-                id="address"
-                value={address}
-                onChange={handleChange("address")}
-              />
+              <input type="text" id="address" value={address} onChange={handleChange("address")} />
             </div>
           </div>
         </div>
 
+        {/* Password */}
         <div className="basic-info">
           <div className="head">
             <p>
-              {" "}
               <Lock size={15} /> Password
             </p>
             <p>Create strong security</p>
@@ -237,12 +217,7 @@ const CreateOrgForm = ({ onSuccess, setCreateOrg }) => {
                 />
                 <Eye
                   size={15}
-                  style={{
-                    position: "absolute",
-                    right: "5",
-                    top: "5",
-                    cursor: "pointer",
-                  }}
+                  style={{ position: "absolute", right: "5px", top: "5px", cursor: "pointer" }}
                   onClick={showPassword}
                 />
               </div>
@@ -258,12 +233,7 @@ const CreateOrgForm = ({ onSuccess, setCreateOrg }) => {
                 />
                 <Eye
                   size={15}
-                  style={{
-                    position: "absolute",
-                    right: "5",
-                    top: "5",
-                    cursor: "pointer",
-                  }}
+                  style={{ position: "absolute", right: "5px", top: "5px", cursor: "pointer" }}
                   onClick={showPassword}
                 />
               </div>
@@ -271,14 +241,10 @@ const CreateOrgForm = ({ onSuccess, setCreateOrg }) => {
           </div>
         </div>
 
+        {/* Buttons */}
         <div className="btns-group">
           <div onClick={() => setCreateOrg(false)}>
-            <Button
-              backgroundColor="white"
-              text="cancel"
-              color="black"
-              noIcon={true}
-            />
+            <Button backgroundColor="white" text="Cancel" color="black" noIcon={true} />
           </div>
           <div onClick={handleSubmit}>
             <Button
@@ -290,7 +256,8 @@ const CreateOrgForm = ({ onSuccess, setCreateOrg }) => {
             />
           </div>
         </div>
-        {/* </form> */}
+
+        {/* Success / Not matched */}
         {success && (
           <p ref={successRef} style={{ color: "green", marginTop: "10px" }}>
             {success}

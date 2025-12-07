@@ -78,6 +78,8 @@ return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padd
     };
 
 const handleSubmit = async () => {
+    setError(null)
+    setSuccess(null)
 console.log(form.items)
 setLoading(true)
    

@@ -23,7 +23,7 @@ import Products from "./userComponents/Products";
 import Users from "./Users";
 import Card from "./ui/Card";
 import { isAuthenticated, signout } from "./auth/api";
-import {getLogo} from "./admin/api"
+import {getLogo, getLogoPic} from "./admin/api"
 import SuperAdminSetting from "./SuperAdminSetting";
 import { API } from "./config";
 
@@ -35,6 +35,7 @@ const panelRef = useRef(null);
   const [isPanelOpen, setIsPanelOpen] = useState(!isMobile);
   const [directLink, setDirectLink] = useState("");
   const [logo, setLogo] = useState({})
+  const [imgUrl, setImgUrl] = useState(null)
 
   const navigate = useNavigate()
 
@@ -71,6 +72,7 @@ const panelRef = useRef(null);
 
   useEffect(()=>{
 fetchLogo()
+fetchLogoPic()
   },[])
 
 const fetchLogo = async()=>{
@@ -82,12 +84,21 @@ const fetchLogo = async()=>{
     setLogo(data)
   }
 }
+const fetchLogoPic = async () => {
+  try {
+    const blob = await getLogoPic(user._id, token);
+     const imageUrl = URL.createObjectURL(blob);
+    // console.log(imageUrl)
+    setImgUrl(imageUrl);
+  } catch (error) {
+    console.error("Failed to fetch logo pic:", error);
+    setImgUrl(null);
+  }
+};
 
 const refreshLogo = async () => {
-  const data = await getLogo(user._id, token);
-  if (!data.error) {
-    setLogo(data);
-  }
+fetchLogo()
+fetchLogoPic()
 };
 
 
@@ -119,7 +130,7 @@ const refreshLogo = async () => {
       <div  ref={panelRef} className={`side-panel ${isPanelOpen ? "show" : ""}`}>
         <div className="side-panel-header gap">
           <div className="logo">
-            <img src={logo?.path ? API + logo.path : "./logo-invoice.png"} alt="my logo" width={50}/>
+            <img src={imgUrl? imgUrl : "./logo-invoice.png"} alt="my logo" width={50}/>
           </div>
           <div className="info">
             <p>{logo?.companyName || "SimplyBill"}</p>

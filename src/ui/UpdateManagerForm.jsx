@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {User, Key, Lock, Eye} from "lucide-react"
 import Button from './Button'
 import "../styles/createClientForm.css"
@@ -13,8 +13,10 @@ const UpdateManagerForm = ({onSuccess ,setCreateUpdateManager, manager, updateMa
   const [show, setShow] = useState(false);
   const [notMatched, setNotMatched] = useState('');
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
   const organization = user.organization;
-
+  const errorRef = useRef(null)
+  const successRef = useRef(null)
   const handleChange = (name) => (event) => {
     setSuccess("")
     if(name == "name"){
@@ -34,6 +36,8 @@ useEffect(() => {
 
 
 const handleSubmit = async() => {
+setSuccess(null)
+setError(null)
   setLoading(true)
     // console.log(updateManager)
     // const {name, email, organization, _id} = updateManager
@@ -47,8 +51,13 @@ const handleSubmit = async() => {
       }
       if(data.error){
         setLoading(false)
+        setError(data.error)
           console.log("error", data.error);
-        
+          setTimeout(() => {
+        if(errorRef.current) {
+          errorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 100);
         } else {
           setLoading(false)
           console.log(data)
@@ -63,6 +72,13 @@ const showPassword = async(e) => {
   setShow(prev => !prev);
 }
 
+  const showError = () => {
+  if (!error) return ""
+
+return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padding:"10px", marginBottom:"9px",borderRadius:"10px"}}>
+   <p style={{margin: "0 auto"}}>{error}</p>
+</div>
+}
   return (
     <div className="client-form-container">
         <div className="container">
@@ -76,6 +92,7 @@ const showPassword = async(e) => {
         <p>Enter manager information for account creation</p>
         </div>  
       </div>
+      {showError()}
         {/* <form> */}
 
        
@@ -106,7 +123,7 @@ const showPassword = async(e) => {
             </div>
         </div>
  {/* </form> */}
-   {success && <p style={{ color: "green", marginTop: "10px" }}>{success}</p>}
+   {success && <p ref={successRef} style={{ color: "green", marginTop: "10px" }}>{success}</p>}
    {notMatched && <p style={{ color: "red", marginTop: "10px" }}>{notMatched}</p>}
     </div>
     </div>

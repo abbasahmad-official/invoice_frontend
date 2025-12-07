@@ -85,3 +85,9 @@ section h4 {
   /* width: 80px; */
   display: inline-block;
 }
+
+/* @media(max-width: 366px){
+  .invoice-wrapper{
+  overflow-x: auto;
+}
+} */

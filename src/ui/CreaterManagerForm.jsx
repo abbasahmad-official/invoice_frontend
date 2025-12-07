@@ -45,6 +45,8 @@ return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padd
 }
 
 const handleSubmit = async() => {
+  setError(null)
+  setSuccess(null)
 setLoading(true)
     // console.log(organization)
   if(newPassword.length >0 && confirmPassword.length > 0 ){

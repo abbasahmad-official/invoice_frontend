@@ -20,7 +20,7 @@ import { isAuthenticated } from "../auth/api";
 import jsPDF from "jspdf";
 import { useCurrency } from "../CurrencyContext";
 import SpinningWheel from "./SpinningWheel";
-
+import Plan from "./Plan";
 const Table = ({
   // setManager,
   setCreateUpdateManager,
@@ -260,7 +260,7 @@ const {currency, setCurrencyCode} = useCurrency({})
           <thead>
             <tr>
               {tableHeadNames.map((head, index) => (
-                <th key={index}>{head}</th>
+                <th  key={index}>{head}</th>
               ))}
             </tr>
           </thead>
@@ -353,8 +353,8 @@ const {currency, setCurrencyCode} = useCurrency({})
                     <td>{client.phone}</td>
                     <td>{client.address}</td>
                     <td>
-                      <div style={{textAlign:"center"}}>
-                        <p>{client.invoiceCount || "invoices"}</p>
+                      <div style={{textAlign:"left", paddingLeft:"19px"}}>
+                        <p>{client.invoiceCount || "0"}</p>
                       </div>
                     </td>
                     <td>{formattedDate}</td>
@@ -454,7 +454,8 @@ const {currency, setCurrencyCode} = useCurrency({})
                    
                     <td>
                       <div>
-                        <p>One Time Purchase</p>
+                       <p>{org.plan}</p>
+                        {/* <p>One Time Purchase</p> */}
                       </div>
                     </td>
                     <td>{formattedDate}</td>

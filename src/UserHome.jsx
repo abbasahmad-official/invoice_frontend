@@ -21,7 +21,7 @@ import Clients from "./userComponents/Clients";
 import Products from "./userComponents/Products";
 import Card from "./ui/Card";
 import { isAuthenticated, signout } from "./auth/api";
-import { getLogo } from "./admin/api";
+import { getLogo, getLogoPic } from "./admin/api";
 import { API } from "./config";
 import ManagerSettings from "./userComponents/ManagerSettings";
 
@@ -32,6 +32,7 @@ const UserHome = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1016);
   const [isPanelOpen, setIsPanelOpen] = useState(!isMobile);
   const [directLink, setDirectLink] = useState("");
+   const [imgUrl, setImgUrl]= useState(null)
   const[logo, setLogo] = useState({})
   
   const navigate = useNavigate()
@@ -67,19 +68,31 @@ const UserHome = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-    useEffect(()=>{
-  fetchLogo()
-    },[])
-  
-  const fetchLogo = async()=>{
-    const data  = await getLogo(user.organization, token)
-    if(data.error && data.status== 404){
-      console.log(data.error)
-    } else {
-      // console.log(data)
-      setLogo(data)
-    }
+  useEffect(()=>{
+fetchLogo()
+fetchLogoPic()
+  },[])
+
+const fetchLogo = async()=>{
+  const data  = await getLogo(user.organization, token)
+  if(data.error && data.status== 404){
+    console.log(data.error)
+  } else {
+    // console.log(data)
+    setLogo(data)
   }
+}
+const fetchLogoPic = async () => {
+  try {
+    const blob = await getLogoPic(user.organization, token);
+     const imageUrl = URL.createObjectURL(blob);
+    // console.log(imageUrl)
+    setImgUrl(imageUrl);
+  } catch (error) {
+    console.error("Failed to fetch logo pic:", error);
+    setImgUrl(null);
+  }
+};
 
   const isActive = (path) => ({
     backgroundColor: activeSection === path ? "#dde2f6ff" : "#ffffff",
@@ -117,7 +130,7 @@ const UserHome = () => {
       <div ref={panelRef} className={`side-panel ${isPanelOpen ? "show" : ""}`}>
         <div className="side-panel-header gap">
           <div className="logo">
-            <img src={logo?.path ? API + logo.path : "./logo-invoice.png"} alt="my logo" width={50}/>
+            <img src={imgUrl ? imgUrl: "./logo-invoice.png"} alt="my logo" width={50}/>
           </div>
           <div className="info">
             <p>{logo?.companyName || "SimplyBill"}</p>

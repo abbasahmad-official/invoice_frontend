@@ -885,6 +885,24 @@ export const getOrganizationsByStatus = (status, token) => {
     });
 };
 
+export const getOrganization = (orgId, token) => {
+  return fetch(`${API}/org/${orgId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(response => {
+      return response.json();
+    })
+    .catch(error => {
+      console.error('Error fetching organizations by id:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+
 export const removeOrg = (orgId, token) => {
   return fetch(`${API}/org/remove/${orgId}`, {
     method: 'DELETE',
@@ -938,6 +956,27 @@ export const updateOrg = (orgId, orgData) => {
       'Accept': 'application/json'    
     },
     body:JSON.stringify(orgData)
+  })
+    .then(response => {
+     
+      return response.json();
+    }
+    )
+    .catch(error => {
+      console.error('Error updating organization:', error);
+      throw error; // rethrow so caller can handle
+    });
+};
+
+export const setTemplateName = (orgId, orgData, token) => {
+  return fetch(`${API}/org/update/template-name/${orgId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      Authorization:`Bearer ${token}`    
+    },
+    body:JSON.stringify({templateName:orgData})
   })
     .then(response => {
      
@@ -1015,7 +1054,7 @@ export const getManagersByStatus = (status, orgId, token) => {
       throw error; // rethrow so caller can handle
     });
 };
-
+// 
 export const uploadLogo = (formData, token) => {
     return fetch(`${API}/upload`, {
     method: 'POST',
@@ -1064,6 +1103,21 @@ export const getLogo = (id, token)=> {
 })
  .then(response => {
   return response.json();
+ })
+  .catch(error =>{
+     console.error('Error fetching logo', error);
+      throw error; // rethrow so caller can handle
+  }) 
+}
+export const getLogoPic = (orgId, token)=> {
+ return fetch(`${API}/logo/pic/${orgId}`, {
+  method:"GET",
+  headers:{
+    Authorization: `Bearer ${token}`
+  }
+})
+ .then(response => {
+  return response.blob();
  })
   .catch(error =>{
      console.error('Error fetching logo', error);

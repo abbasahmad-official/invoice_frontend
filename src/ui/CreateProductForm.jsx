@@ -48,6 +48,8 @@ return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padd
 
   // Submit handler
   const handleSubmit = async () => {
+    setSuccess(null)
+    setError(null)
  setLoading(true)
     const priceAfterConversion = (price/currency).toFixed(2)
     const data = await createProduct(
