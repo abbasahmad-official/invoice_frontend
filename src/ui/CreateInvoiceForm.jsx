@@ -122,8 +122,8 @@ return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padd
         // } 
         // console.log(data)
       } else {
+        setLoading(true)
          data = await createInvoice(cleanedForm, token);
-         setLoading(true)
       }
 
       if(data.error){
