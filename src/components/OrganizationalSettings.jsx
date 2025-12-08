@@ -109,6 +109,10 @@ setShowPremium(true)
   const fetchLogoPic = async () => {
     try {
       const blob = await getLogoPic(user.organization, token);
+      if(blob.error){
+        setImagePreviewUrl("/logo-invoice.png");
+        return
+      }
       const imageUrl = URL.createObjectURL(blob);
       // console.log(imageUrl)
       setImagePreviewUrl(imageUrl);

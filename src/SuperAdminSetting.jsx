@@ -53,6 +53,10 @@ useEffect(()=>{
 const fetchLogoPic = async () => {
   try {
     const blob = await getLogoPic(user._id, token);
+    if(blob.error){
+        setImagePreviewUrl("/logo-invoice.png");
+        return
+      }
      const imageUrl = URL.createObjectURL(blob);
     // console.log(imageUrl)
     setImagePreviewUrl(imageUrl);
