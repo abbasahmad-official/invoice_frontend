@@ -12,13 +12,14 @@ const Dashboard = ({setActiveSection, setDirectLink}) => {
 
     const [paidRevenue, setPaidRevenue] = useState([]);
     const [remainingRevenue, setRemainingRevenue] = useState([]);
-    const [clients, setClients] = useState();
-    const [invoices, setInvoices] = useState();
-    const [users, setUsers] = useState();
+    const [clients, setClients] = useState(0);
+    const [invoices, setInvoices] = useState(0);
+    const [users, setUsers] = useState(0);
     const [lastInvoices, setLastInvoices] = useState([]);
+    const [overdue, setOverdue] = useState(0);
 
     // const [totalClients, setTotalClients] = useState(3);
-    const [overdue, setOverdue] = useState();
+    const rate = currency || 1;
 // 
     useEffect(() => {
     //     // Fetch and update the state with real data from an API or database
@@ -52,8 +53,8 @@ const Dashboard = ({setActiveSection, setDirectLink}) => {
                 </div>
             </div>
             <div className="card-container">
-                <Card icon2={user?.currency.symbol} icon="DollarSign" iconColor="green" title="Total Revenue" number={(totalPrice * currency).toFixed(2)} subtitle= {`From ${paidRevenue.length} invoices`} dollar={true}  />
-                <Card icon="Clock" iconColor="red" title="Pending Revenue" number={(pendingPrice * currency).toFixed(2)} subtitle= {`From ${remainingRevenue.length} invoices`} dollar={true}/>
+                <Card icon2={user?.currency.symbol} icon="DollarSign" iconColor="green" title="Total Revenue" number={(totalPrice * rate).toFixed(2)} subtitle= {`From ${paidRevenue.length} invoices`} dollar={true}  />
+                <Card icon="Clock" iconColor="red" title="Pending Revenue" number={(pendingPrice * rate).toFixed(2)} subtitle= {`From ${remainingRevenue.length} invoices`} dollar={true}/>
                 <Card icon="Users"  iconColor="blue" title="Total Clients" number={clients} subtitle="Active clients"/>
                 <Card icon="TrendingUp" iconColor="red" title="Overdue Invoices" number={overdue} subtitle="Need attention"/>
         </div>

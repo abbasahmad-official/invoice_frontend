@@ -12,13 +12,14 @@ const Dashboard = ({ setActiveSection, setDirectLink }) => {
     const {currency} = useCurrency()
     const [paidRevenue, setPaidRevenue] = useState([]);
     const [remainingRevenue, setRemainingRevenue] = useState([]);
-    const [clients, setClients] = useState();
-    const [invoices, setInvoices] = useState();
-    const [managers, setManagers] = useState();
-    const [overdue, setOverdue] = useState()
+    const [clients, setClients] = useState(0);
+    const [invoices, setInvoices] = useState(0);
+    const [managers, setManagers] = useState(0);
+    const [overdue, setOverdue] = useState(0)
     const [lastThreeInvoices, setLastThreeInvoices] = useState([]);
     // const [totalClients, setTotalClients] = useState(3);
     // const [overdueInvoices, setOverdueInvoices] = useState(1);
+ const rate = currency || 1;
 
     useEffect(() => {
         //     // Fetch and update the state with real data from an API or database
@@ -53,8 +54,8 @@ const Dashboard = ({ setActiveSection, setDirectLink }) => {
                 </div>
             </div>
             <div className="card-container">
-                <Card icon="DollarSign" icon2={user?.currency.symbol} iconColor="green" title="Total Revenue" number={(totalPrice * currency).toFixed(2)} subtitle={`From ${paidRevenue.length} invoices`} dollar={true} />
-                <Card icon="Clock" iconColor="red" title="Pending Revenue" number={(pendingPrice * currency).toFixed(2)} subtitle={`From ${remainingRevenue.length} invoices`} dollar={true} />
+                <Card icon="DollarSign" icon2={user?.currency.symbol} iconColor="green" title="Total Revenue" number={(totalPrice * rate).toFixed(2)} subtitle={`From ${paidRevenue.length} invoices`} dollar={true} />
+                <Card icon="Clock" iconColor="red" title="Pending Revenue" number={(pendingPrice * rate).toFixed(2)} subtitle={`From ${remainingRevenue.length} invoices`} dollar={true} />
                 <Card icon="Users" iconColor="blue" title="Total Clients" number={clients} subtitle="Active clients"  />
                 <Card icon="TrendingUp" iconColor="red" title="Overdue Invoices" number={overdue} subtitle="Need attention" />
             </div>

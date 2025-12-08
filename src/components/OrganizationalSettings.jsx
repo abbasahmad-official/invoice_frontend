@@ -43,6 +43,7 @@ const OrganizationalSettings = ({
   const [success, setSuccess] = useState(null);
   const [logoRemove, setLogoRemove] = useState(false);
   const [organization, setOrganization] = useState("")
+  const [showPremium, setShowPremium] = useState(false)
 
   const [selectedTemplate, setSelectedTemplate] = useState("invoice-template.html");
 
@@ -76,9 +77,11 @@ const OrganizationalSettings = ({
       if (!data.error) {
         console.log(API + data.path);
         setOrganization(data);
+        setSelectedTemplate(data.templateName)
   setIsPremium(data?.plan !== "Free")
-  setSelectedTemplate(data.templateName)
-      }
+}
+setShowPremium(true)
+//  setTimeout(()=>{setShowPremium(true)},0)
     } catch (err) {
       console.error("Error fetching logo:", err);
     }
@@ -327,7 +330,7 @@ const successTimeout = ()=>{
       </div>
 
       {/* Appearance Section */}
-      <div className="settings-card" style={{ position: "relative", borderBottom:!isPremium?"2px solid gray":"" }}>
+      {showPremium ? <div className="settings-card" style={{ position: "relative", borderBottom:!isPremium?"2px solid gray":"" }}>
         {!isPremium && (
           <div className="premium-overlay">
             <div className="premium-badge">
@@ -421,11 +424,11 @@ const successTimeout = ()=>{
             </div>
           </div>
         </div>
-      </div>
+      </div>:<div style={{width:"100%", textAlign:"center"}}> <SpinningWheel size={25} /> </div> }
 
      
       {/* Invoice Template Section */}
-      <div className="settings-card" style={{ position: "relative", borderBottom:!isPremium?"2px solid gray":""}}>
+      {showPremium && <div className="settings-card" style={{ position: "relative", borderBottom:!isPremium?"2px solid gray":""}}>
           {!isPremium && (
           <div className="premium-overlay">
             <div className="premium-badge">
@@ -460,7 +463,7 @@ const successTimeout = ()=>{
             </div>
           ))}
         </div>
-      </div>
+      </div>}
       <button className="save-btn select-padding" onClick={handleSave}>
         {loading ? <SpinningWheel size={25} /> : "Save Changes"}
       </button>

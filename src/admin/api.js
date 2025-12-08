@@ -1117,6 +1117,9 @@ export const getLogoPic = (orgId, token)=> {
   }
 })
  .then(response => {
+  if(!response.ok){
+    return response.json()
+  }
   return response.blob();
  })
   .catch(error =>{

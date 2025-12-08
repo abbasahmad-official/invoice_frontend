@@ -34,6 +34,7 @@ const AdminHome = () => {
   const [directLink, setDirectLink] = useState("");
   const [imgUrl, setImgUrl]= useState(null)
   const [logo, setLogo] = useState("") 
+  const [loading, setLoading]  = useState(false)
 
   const navigate = useNavigate();
 
@@ -82,6 +83,8 @@ const fetchLogo = async()=>{
   const data  = await getLogo(user.organization, token)
   if(data.error && data.status== 404){
     console.log(data.error)
+    setImgUrl("/logo-invoice.png")
+    return
   } else {
     // console.log(data)
     setLogo(data)
@@ -90,18 +93,22 @@ const fetchLogo = async()=>{
 const fetchLogoPic = async () => {
   try {
     const blob = await getLogoPic(user.organization, token);
+    console.log(blob)
+    if(blob.error){
+      setImgUrl("/logo-invoice.png")
+      return
+    }
      const imageUrl = URL.createObjectURL(blob);
-    // console.log(imageUrl)
     setImgUrl(imageUrl);
   } catch (error) {
     console.error("Failed to fetch logo pic:", error);
-    setImgUrl(null);
+    setImgUrl("/logo-invoice.png");
   }
 };
 
 const refreshLogo = async () => {
-fetchLogo()
-fetchLogoPic()
+  fetchLogoPic()
+  fetchLogo()
 };
 
   const isActive = (path) => ({
@@ -109,9 +116,12 @@ fetchLogoPic()
   });
 
   const logout = () => {
+    // setLoading(true)
+    
     signout(token ,()=>{
       navigate("/login")
     })
+  
   }
 
   const handleClick = (part) => {
@@ -140,7 +150,7 @@ if(part == "invoices"){
       <div ref={panelRef} className={`side-panel ${isPanelOpen ? "show" : ""}`}>
         <div className="side-panel-header gap">
           <div className="logo">
-            <img src={imgUrl ? imgUrl : "./logo-invoice.png"} alt="my logo" width={50}/>
+            <img src={imgUrl} alt="my logo" width={50}/>
           </div>
           <div className="info">
             <p>{logo?.companyName || "SimplyBill"}</p>
@@ -159,7 +169,7 @@ if(part == "invoices"){
             <p>{user.name}</p>
             <p>{user.email}</p>
             <div onClick={logout} style={{marginTop: "10px",marginLeft:"10px", textAlign: "center"}}>
-          <Button  blackHover={true} text={"logout"} icon="LogOut" backgroundColor="black" hover={"off"}/>
+          <Button loading={loading} blackHover={true} text={"logout"} icon="LogOut" backgroundColor="black" hover={"off"}/>
             </div>
           </div>
         </div>

@@ -79,6 +79,7 @@ const fetchLogo = async()=>{
   const data  = await getLogo(user._id, token)
   if(data.error && data.status== 404){
     console.log(data.error)
+    setImgUrl("/logo-invoice.png")
   } else {
     // console.log(data)
     setLogo(data)
@@ -92,7 +93,7 @@ const fetchLogoPic = async () => {
     setImgUrl(imageUrl);
   } catch (error) {
     console.error("Failed to fetch logo pic:", error);
-    setImgUrl(null);
+    setImgUrl("/logo-invoice.png");
   }
 };
 
@@ -130,7 +131,7 @@ fetchLogoPic()
       <div  ref={panelRef} className={`side-panel ${isPanelOpen ? "show" : ""}`}>
         <div className="side-panel-header gap">
           <div className="logo">
-            <img src={imgUrl? imgUrl : "./logo-invoice.png"} alt="my logo" width={50}/>
+            <img src={imgUrl} alt="my logo" width={50}/>
           </div>
           <div className="info">
             <p>{logo?.companyName || "SimplyBill"}</p>
