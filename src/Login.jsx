@@ -1,219 +1,306 @@
-import React, {useEffect, useRef, useState} from 'react'
-import {Navigate, useNavigate} from "react-router-dom"
-import './styles/login.css'
-import {FileText, Users, TrendingUp} from "lucide-react"
-import {signup, signin, authenticate, isAuthenticated} from "./auth/api"
-import OTPBoxes from './ui/OTPForm'
-import OTPPage from './ui/OTPUsage'
-import SpinningWheel from './ui/SpinningWheel'
-import {Eye, Lock, EyeOff} from "lucide-react"
-
+import React, { useEffect, useRef, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+import "./styles/login.css";
+import { FileText, Users, TrendingUp } from "lucide-react";
+import { signup, signin, authenticate, isAuthenticated } from "./auth/api";
+import OTPBoxes from "./ui/OTPForm";
+import OTPPage from "./ui/OTPUsage";
+import SpinningWheel from "./ui/SpinningWheel";
+import { Eye, Lock, EyeOff } from "lucide-react";
 
 const Login = () => {
-    const navigate = useNavigate();
-    const [mode, setMode] = useState("login");
-    const [isActive, setIsActive] = useState(false);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
-    const [error, setError] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [forgetPassword, setForgetPassword] = useState(false)
-    const realignRef = useRef()
-    const passwordRef = useRef()
+  const navigate = useNavigate();
+  const [mode, setMode] = useState("login");
+  const [isActive, setIsActive] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [forgetPassword, setForgetPassword] = useState(false);
+  const realignRef = useRef();
+  const passwordRef = useRef();
 
-    useEffect(()=>{
-      isAuthenticated() && navigate("/")
-    }, [])
-
-    const adminEmail = "admin@gmail.com" 
-    const adminPassword = "password1" 
-    const userEmail = "user@gmail.com" 
-    const userPassword = "password1" 
-    const superAdminEmail = "superadmin@example.com"
-    const superAdminPassword = "SuperSecurePassword123!"
-
-    const handleClick = (mode) => { 
-        setMode(mode)
-    };
-
-    const handleDemoUse = (role) => {
-        if(role === "admin"){
-            // populate with admin credentials
-            setEmail(adminEmail)
-            setPassword(adminPassword)
-            // alert("Admin credentials used")
-        } else if (role == "user") {
-            // populate with user credentials
-            setEmail(userEmail)
-            setPassword(userPassword)
-            // alert("User credentials used")
-        } else {
-          setEmail(superAdminEmail)
-            setPassword(superAdminPassword)
-        }
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate("/");
     }
- const handleChange = (field) => (event) => {
-  setError("")
+  }, []);
+
+  const adminEmail = "admin@gmail.com";
+  const adminPassword = "password1";
+  const userEmail = "user@gmail.com";
+  const userPassword = "password1";
+  const superAdminEmail = "superadmin@example.com";
+  const superAdminPassword = "SuperSecurePassword123!";
+
+  const handleClick = (mode) => {
+    setMode(mode);
+  };
+
+  const handleDemoUse = (role) => {
+    if (role === "admin") {
+      // populate with admin credentials
+      setEmail(adminEmail);
+      setPassword(adminPassword);
+      // alert("Admin credentials used")
+    } else if (role == "user") {
+      // populate with user credentials
+      setEmail(userEmail);
+      setPassword(userPassword);
+      // alert("User credentials used")
+    } else {
+      setEmail(superAdminEmail);
+      setPassword(superAdminPassword);
+    }
+  };
+  const handleChange = (field) => (event) => {
+    setError("");
     const value = event.target.value;
-    if(field === "email") setEmail(value);
-    else if(field === "password") setPassword(value);
-    else if(field === "name") setName(value);
+    if (field === "email") setEmail(value);
+    else if (field === "password") setPassword(value);
+    else if (field === "name") setName(value);
 
     // console.log({email, password, name});
-    };
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  // if (mode === "register") {
-  //   try {
-  //     const data = await signup({ name, email, password});
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    // if (mode === "register") {
+    //   try {
+    //     const data = await signup({ name, email, password});
 
-  //     if (data.error) {
-  //       setError(data.error)
-  //       // console.log(data.error);
-  //       return;
-  //     }
+    //     if (data.error) {
+    //       setError(data.error)
+    //       // console.log(data.error);
+    //       return;
+    //     }
 
-  //     console.log(data);
-  //     setLoading(false)
+    //     console.log(data);
+    //     setLoading(false)
 
-  //     setMode("login");
-  //   } catch (err) {
-  //     console.error("Signup failed:", err);
-  //   }
-  // } 
-  // else
-     if (mode === "login") {
-    try {
-      const data = await signin({ email, password });
+    //     setMode("login");
+    //   } catch (err) {
+    //     console.error("Signup failed:", err);
+    //   }
+    // }
+    // else
+    if (mode === "login") {
+      try {
+        const data = await signin({ email, password });
+        if (!data || typeof data !== "object") {
+          setError("Unexpected server error");
+          setLoading(false);
+          return;
+        }
 
-      if (data.error) {
-        // console.log(data.error);
-        setError(data.error)
-                 setTimeout(() => {
-    if (realignRef.current) {
-      realignRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  }, 100);
-        setLoading(false)
-      } else {
-        
-        authenticate(data, ()=>{
+        if (data.error) {
+          // console.log(data.error);
+          setError(data.error);
+          setTimeout(() => {
+            if (realignRef.current) {
+              realignRef.current.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+            }
+          }, 100);
+          setLoading(false);
+        } else {
+          authenticate(data, () => {
             navigate("/");
-        })
-        setLoading(false)
+          });
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error("Login failed:", err);
       }
-    } catch (err) {
-      console.error("Login failed:", err);
     }
-  }
-};
-// 
-const showError = () => {
-  if (!error) return ""
+  };
+  //
+  const showError = () => {
+    if (!error) return "";
 
-return <div className='tasks' style={{background: "#FF7081", padding:"10px", borderRadius:"10px"}}>
-   <p style={{margin: "0 auto"}}>{error}</p>
-</div>
-}
+    return (
+      <div
+        className="tasks"
+        style={{ background: "#FF7081", padding: "10px", borderRadius: "10px" }}
+      >
+        <p style={{ margin: "0 auto" }}>{error}</p>
+      </div>
+    );
+  };
 
-const [hide, setHide] = useState(false)
-const passwordVisibility = ()=>{
-  if(!hide){
-    passwordRef.current.type= "text"
-    setHide(prev => !prev)
-  } else{
-    passwordRef.current.type = "password"
-    setHide(prev => !prev)
-  }
-}
+  const [hide, setHide] = useState(false);
+  const passwordVisibility = () => {
+    if (!hide) {
+      passwordRef.current.type = "text";
+      setHide((prev) => !prev);
+    } else {
+      passwordRef.current.type = "password";
+      setHide((prev) => !prev);
+    }
+  };
 
-const handleForgotPassword = () => {
-setForgetPassword(true)
-}
+  const handleForgotPassword = () => {
+    setForgetPassword(true);
+  };
   return (
-    <div className='login'>
-       {forgetPassword?<OTPPage/>:<div className="form">
-            <div className="info">
-                <div className="logo"><FileText color='white' /></div>
-                <div className="after-logo">
-                    <h3>InvoiceSys</h3>
-                    <p>Professional Invoice Management</p>
-                </div>
+    <div className="login">
+      {forgetPassword ? (
+        <OTPPage />
+      ) : (
+        <div className="form">
+          <div className="info">
+            <div className="logo">
+              <FileText color="white" />
             </div>
-            <div className="tasks">
-                <div className="task">
-                    <div className="logo"><FileText color='purple' style={{flexShrink: 0}} /></div>
-                    <p>Create Invoices</p>
-                </div>
-          
-                <div className="task">
-                    <div className="logo"><Users  color='green' style={{flexShrink: 0}} /></div>
-                    <p>Manage Clients</p>
-                </div>
-            
-            
-                <div className="task">
-                    <div className="logo"><TrendingUp color='blue' style={{flexShrink: 0}} /></div>
-                    <p>Track Revenue</p>
-                </div>
+            <div className="after-logo">
+              <h3>InvoiceSys</h3>
+              <p>Professional Invoice Management</p>
+            </div>
+          </div>
+          <div className="tasks">
+            <div className="task">
+              <div className="logo">
+                <FileText color="purple" style={{ flexShrink: 0 }} />
+              </div>
+              <p>Create Invoices</p>
             </div>
 
-            <div className="demo-credentials" style={{marginBottom:error? "0px": null}}>
-                <h4>Demo Credentials</h4>
-                <p>Use these credentials to test different user roles</p>
-                <div className="role">
-                   <div className="admin superAdmin">
-                        <div className="left">
-                            <p>{superAdminEmail}</p>
-                            <p>Super Admin (Full Access)</p>
-                        </div>
-                        <button className="login-btn" onClick={()=> handleDemoUse("superAdmin")} >Use</button>
-                    </div>
-
-                    <div className="admin">
-                        <div className="left">
-                            <p>{adminEmail}</p>
-                            <p>Admin (Organizational Access)</p>
-                        </div>
-                        <button  className="login-btn" onClick={()=> handleDemoUse("admin")} >Use</button>
-                    </div>
-                    <div className="admin user">
-                        <div className="left">
-                            <p>{userEmail}</p>
-                            <p>User (Limited Access)</p>
-                        </div>
-                        <button className="login-btn" onClick={()=> handleDemoUse("user")} >Use</button>
-                    </div>
-                   
-                </div>
+            <div className="task">
+              <div className="logo">
+                <Users color="green" style={{ flexShrink: 0 }} />
+              </div>
+              <p>Manage Clients</p>
             </div>
-              {showError()}
-            <div className="main-form">
-                {/* <div className="btns">
+
+            <div className="task">
+              <div className="logo">
+                <TrendingUp color="blue" style={{ flexShrink: 0 }} />
+              </div>
+              <p>Track Revenue</p>
+            </div>
+          </div>
+
+          <div
+            className="demo-credentials"
+            style={{ marginBottom: error ? "0px" : null }}
+          >
+            <h4>Demo Credentials</h4>
+            <p>Use these credentials to test different user roles</p>
+            <div className="role">
+              <div className="admin superAdmin">
+                <div className="left">
+                  <p>{superAdminEmail}</p>
+                  <p>Super Admin (Full Access)</p>
+                </div>
+                <button
+                  className="login-btn"
+                  onClick={() => handleDemoUse("superAdmin")}
+                >
+                  Use
+                </button>
+              </div>
+
+              <div className="admin">
+                <div className="left">
+                  <p>{adminEmail}</p>
+                  <p>Admin (Organizational Access)</p>
+                </div>
+                <button
+                  className="login-btn"
+                  onClick={() => handleDemoUse("admin")}
+                >
+                  Use
+                </button>
+              </div>
+              <div className="admin user">
+                <div className="left">
+                  <p>{userEmail}</p>
+                  <p>User (Limited Access)</p>
+                </div>
+                <button
+                  className="login-btn"
+                  onClick={() => handleDemoUse("user")}
+                >
+                  Use
+                </button>
+              </div>
+            </div>
+          </div>
+          {showError()}
+          <div className="main-form">
+            {/* <div className="btns">
                     <button className={`login-btn ${mode == "login" && "active"}`} onClick={()=> handleClick("login")}  >Login</button>
                     <button className={`register-btn login-btn ${mode == "register" && "active"}`} onClick={()=> handleClick("register")} >Register</button>
                 </div> */}
-                <form onSubmit={handleSubmit}>
-                    
-                {/* {mode==="login" ? */}
-                 <div className="inputs">
-                    <label htmlFor="email">Email</label>
-                    <input type="email" id='email' placeholder='Email' value={email} onChange={handleChange("email")} className='input-login' />
-                    <label htmlFor="password">Password</label>
-                    <div style={{position:"relative"}}>
-                    <input style={{ width:"100%"}} ref={passwordRef} id='password' type="password" placeholder='Password' value={password} className='input-login' onChange={handleChange("password")} />
-                    { !hide?<EyeOff onClick={passwordVisibility}  style={{position:"absolute", right:"5", top:"50%", transform:"translateY(-84%)", cursor:"pointer"}} size={15}/>
-                    :<Eye onClick={passwordVisibility} style={{position:"absolute", right:"5", top:"50%", transform:"translateY(-84%)", cursor:"pointer"}} size={15}/>}
-                    </div>
-                  <div style={{display:"flex", justifyContent:"flex-end"}}>
-                        <a className='forget-button' onClick={handleForgotPassword}>Forget Password?</a>
-                    </div>
-                    <button ref={realignRef} style={{cursor: "pointer"}} className="submit">{loading? <SpinningWheel size={25}/>: "Login"}</button>
+            <form onSubmit={handleSubmit}>
+              {/* {mode==="login" ? */}
+              <div className="inputs">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  autoComplete="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={handleChange("email")}
+                  className="input-login"
+                />
+                <label htmlFor="password">Password</label>
+                <div style={{ position: "relative" }}>
+                  <input
+                    style={{ width: "100%" }}
+                    ref={passwordRef}
+                    id="password"
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    className="input-login"
+                    onChange={handleChange("password")}
+                  />
+                  {!hide ? (
+                    <EyeOff
+                      onClick={passwordVisibility}
+                      style={{
+                        position: "absolute",
+                        right: "5",
+                        top: "50%",
+                        transform: "translateY(-84%)",
+                        cursor: "pointer",
+                      }}
+                      size={15}
+                    />
+                  ) : (
+                    <Eye
+                      onClick={passwordVisibility}
+                      style={{
+                        position: "absolute",
+                        right: "5",
+                        top: "50%",
+                        transform: "translateY(-84%)",
+                        cursor: "pointer",
+                      }}
+                      size={15}
+                    />
+                  )}
                 </div>
-                {/* :  */}
-                {/* <div className="inputs">
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                  <a className="forget-button" onClick={handleForgotPassword}>
+                    Forget Password?
+                  </a>
+                </div>
+                <button
+                  ref={realignRef}
+                  style={{ cursor: "pointer" }}
+                  className="submit"
+                >
+                  {loading ? <SpinningWheel size={25} /> : "Login"}
+                </button>
+              </div>
+              {/* :  */}
+              {/* <div className="inputs">
                     <label htmlFor="Name">Full Name</label>
                     <input type="text" placeholder='Name' value={name} onChange={handleChange("name")} className='input-login'  />
                     <label htmlFor="email">Email</label>
@@ -222,13 +309,13 @@ setForgetPassword(true)
                     <input type="password" placeholder='Password'value={password} className='input-login' onChange={handleChange("password")}  />
                     <button className="submit">Register</button>
                 </div> */}
-                {/* } */}
-               
-                </form>
-            </div>
-        </div>}
+              {/* } */}
+            </form>
+          </div>
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
