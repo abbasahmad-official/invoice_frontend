@@ -154,7 +154,7 @@ console.log("reachedEnd")
       <div className="invoice-wrapper" >
 {initialLoad? <SpinningWheel size={60}/> :<iframe
     ref={invoiceRef}
-    style={{ width: "100%", height: "1000px", border: "none", height:"1500px" }}
+    style={{ width: "100%", border: "none", height:"1500px" }}
     srcDoc={htmlContent} // this is your fetched HTML string
     title="Invoice Preview"
   />}
