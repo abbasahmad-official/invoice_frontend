@@ -115,9 +115,18 @@ return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padd
             <textarea name="description" id="description" style={{width:"100%"}}  value={description}onChange={handleChange("description")}></textarea>
             {/* <input type="text" id='description' /> */}
             </div>
-            <div className="field">
-            <label htmlFor="price" >Price</label>
-            <input type="Number" id='price' value={price} onChange={handleChange("price")} />
+           <div className="field">
+              <label htmlFor="price">Price</label>
+              <div style={{display: "flex",backgroundColor:"#F3F3F5",  border:"1px solid lightgray", borderRadius:"6px"}}>
+              <p style={{padding:"2px",}}>{user?.currency.symbol}</p>
+              <input
+              className='border-left'
+                type="number"
+                id="price"
+                value={price}
+                onChange={handleChange("price")}
+                />
+                </div>
             </div>
             </div>
         </div>

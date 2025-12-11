@@ -61,6 +61,12 @@ const OrganizationalSettings = ({
       img: "/template-invoice2.png",
        htmlName:"invoice-template2.html"
     },
+     {
+      id: 2,
+      name: "Orange Thread",
+      img: "/template-invoice3.png",
+       htmlName:"invoice-template3.html"
+    }
   ];
 
   useEffect(() => {
@@ -187,6 +193,7 @@ setShowPremium(true)
         const data = await uploadLogo(formData, token);
         if (data.error) {
           setError(data.error);
+          setTimeout(()=>setError(null),2000)
           setLoading(false);
           return;
         }
@@ -223,7 +230,7 @@ setShowPremium(true)
 
   } catch (err) {
     console.error(err);
-    setError("An unexpected error occurred");
+    setError(err.error || err.message);
   } finally {
     setLoading(false);
   }

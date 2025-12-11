@@ -414,6 +414,7 @@ const {currency, setCurrencyCode} = useCurrency({})
                           size={25}
                           onClick={() => {
                             setUpdateProduct(product);
+                            
                           }}
                         />
                         {/* <Download size={25} /> */}

@@ -336,9 +336,19 @@ return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padd
             <div onClick={addItem}>
               <Button text="Add Item" blackHover={true} />
             </div>
-            <div className="field">
-              <label>Total Amount</label>
-              <input readOnly type="number" name="totalAmount" value={((form.totalAmount * currency).toFixed(2))} onChange={handleChange} />
+                    <div className="field">
+              <label htmlFor="price">Total Amount</label>
+              <div style={{display: "flex",backgroundColor:"#F3F3F5",  border:"1px solid lightgray", borderRadius:"6px"}}>
+              <p style={{padding:"2px",}}>{user?.currency.symbol}</p>
+              {/* { const tetal = (form.totalAmount * currency).toFixed(2)} */}
+              <input
+              className='border-left'
+                type="number"
+                id="price"
+                value={form.totalAmount}
+                onChange={handleChange}
+                />
+                </div>
             </div>
           </div>
         </div>

@@ -108,7 +108,7 @@ return (
     <Table onSuccess={()=>setShouldReloadProducts(prev => !prev)} setUpdateProduct={setUpdateProduct} header='All Products' subHeader='Your products and services catalog' products={filteredProducts} tableHeadNames={tableHeadNames} />
     </div>}
      {createProduct && <CreateProductForm onSuccess={()=>setShouldReloadProducts(prev => !prev)}  setCreateProduct={setCreateProduct}/>} 
-     {product && <UpdateProductForm  onSuccess={()=>setShouldReloadProducts(prev => !prev)}  product={product} setProduct={setProduct}/>}
+     {product && <UpdateProductForm  onSuccess={()=>setShouldReloadProducts(prev => !prev)}  product={product} setProduct={setProduct} setUpdateProduct={setUpdateProduct} />}
     </Fragment>
   )
 }

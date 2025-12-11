@@ -5,7 +5,7 @@ import { updateProduct } from "../admin/api"
 import { isAuthenticated } from "../auth/api"
 import { useCurrency } from '../CurrencyContext'
 
-const UpdateProductForm = ({ onSuccess ,product, setProduct }) => {
+const UpdateProductForm = ({ onSuccess ,product, setProduct, setUpdateProduct }) => {
   const { user, token } = isAuthenticated();
   const {currency} = useCurrency()
 
@@ -95,7 +95,10 @@ return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padd
     <div className="client-form-container">
       <div className="container">
         <div className="client-create-header">
-          <div onClick={() => setProduct(false)}>
+          <div onClick={() => {
+            setProduct(null)
+            setUpdateProduct(null)
+            }}>
             <Button
               icon="ArrowLeftIcon"
               backgroundColor="transparent"
@@ -152,9 +155,15 @@ return <div ref={errorRef} className='tasks' style={{background: "#FF7081", padd
         </div>
 
         <div className="btns-group">
-          <div onClick={() => setProduct(false)}>
-            <Button backgroundColor="white" text="Cancel" color="black" noIcon={true} />
-          </div>
+        <div
+  onClick={() => {
+    setProduct(null);        // closes the update modal
+    setUpdateProduct(null);  // clear the selected product id
+  }}
+>
+  <Button backgroundColor="white" text="Cancel" color="black" noIcon={true} />
+</div>
+
           <div onClick={handleSubmit}>
             <Button
             loading={loading}
