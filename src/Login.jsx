@@ -200,10 +200,10 @@ setForgetPassword(true)
                 {/* {mode==="login" ? */}
                  <div className="inputs">
                     <label htmlFor="email">Email</label>
-                    <input type="email" placeholder='Email' value={email} onChange={handleChange("email")} className='input-login' />
+                    <input type="email" id='email' placeholder='Email' value={email} onChange={handleChange("email")} className='input-login' />
                     <label htmlFor="password">Password</label>
                     <div style={{position:"relative"}}>
-                    <input style={{ width:"100%"}} ref={passwordRef} type="password" placeholder='Password' value={password} className='input-login' onChange={handleChange("password")} />
+                    <input style={{ width:"100%"}} ref={passwordRef} id='password' type="password" placeholder='Password' value={password} className='input-login' onChange={handleChange("password")} />
                     { !hide?<EyeOff onClick={passwordVisibility}  style={{position:"absolute", right:"5", top:"50%", transform:"translateY(-84%)", cursor:"pointer"}} size={15}/>
                     :<Eye onClick={passwordVisibility} style={{position:"absolute", right:"5", top:"50%", transform:"translateY(-84%)", cursor:"pointer"}} size={15}/>}
                     </div>
