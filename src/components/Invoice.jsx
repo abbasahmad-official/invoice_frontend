@@ -85,12 +85,15 @@ useEffect(() => {
  useEffect(() => {
   // setCurrencyCode(user?.currency.code)
   // console.log(user.organization)
+  setLoading(true)
   listInvoices(user.organization)
     .then((data) => {
       setInvoices(data);
+      setLoading(false)
     })
     .catch((err) => {
       console.error("Failed to load invoices:", err);
+      setLoading(false)
     });
     ;
 }, [shouldReloadInvoices]);
@@ -157,12 +160,12 @@ useEffect(()=>{
                 </div>
     </div>
     <SearchBar status={true} setStatus={setStatus}  onChange={handleSearchChange} value={searchTerm} />
-    <Table  onSuccess={()=> setShouldReloadInvoices(prev => !prev)} setViewInvoiceId={setViewInvoiceId} setUpdateInvoiceId={setUpdateInvoiceId} form={form} setForm={setForm} setUpdateInvoice={setUpdateInvoice} setViewInvoice={setViewInvoice} header='All Invoices' subHeader='Click on an invoice to view details' tableHeadNames={tableHeadNames} invoices={filteredInvoices} />
+    <Table loading={loading} onSuccess={()=> setShouldReloadInvoices(prev => !prev)} setViewInvoiceId={setViewInvoiceId} setUpdateInvoiceId={setUpdateInvoiceId} form={form} setForm={setForm} setUpdateInvoice={setUpdateInvoice} setViewInvoice={setViewInvoice} header='All Invoices' subHeader='Click on an invoice to view details' tableHeadNames={tableHeadNames} invoices={filteredInvoices} />
     </div>}
     
     {createInvoice  && <CreateInvoiceForm onSuccess={()=> setShouldReloadInvoices(prev => !prev)} setCreateInvoice={setCreateInvoice}/> }
     {viewInvoice && <InvoiceView setViewInvoice={setViewInvoice} seeInvoice={seeInvoice}/>}
-    {updateInvoice && <UpdateInvoiceForm onSuccess={()=> setShouldReloadInvoices(prev => !prev)} updateInvoiceId={updateInvoiceId} setViewInvoice={setViewInvoice} form={form} setForm={setForm} setUpdateInvoice={setUpdateInvoice}/>}
+    {updateInvoice && <UpdateInvoiceForm  onSuccess={()=> setShouldReloadInvoices(prev => !prev)} updateInvoiceId={updateInvoiceId} setViewInvoice={setViewInvoice} form={form} setForm={setForm} setUpdateInvoice={setUpdateInvoice}/>}
 
     </Fragment>
   )

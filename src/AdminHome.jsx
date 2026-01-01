@@ -150,7 +150,7 @@ if(part == "invoices"){
       <div ref={panelRef} className={`side-panel ${isPanelOpen ? "show" : ""}`}>
         <div className="side-panel-header gap">
           <div className="logo">
-            <img src={imgUrl} alt="my logo" width={50} style={{borderRadius:"20px"}}/>
+            <img src={imgUrl} alt="my logo" width={60} style={{borderRadius:"20px"}}/>
           </div>
           <div className="info">
             <p>{logo?.companyName || "SimplyBill"}</p>

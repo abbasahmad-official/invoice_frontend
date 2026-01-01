@@ -130,7 +130,7 @@ const fetchLogoPic = async () => {
       <div ref={panelRef} className={`side-panel ${isPanelOpen ? "show" : ""}`}>
         <div className="side-panel-header gap">
           <div className="logo">
-            <img src={imgUrl ? imgUrl: "./logo-invoice.png"} alt="my logo" width={50}/>
+            <img src={imgUrl ? imgUrl: "./logo-invoice.png"} alt="my logo" width={60}/>
           </div>
           <div className="info">
             <p>{logo?.companyName || "SimplyBill"}</p>
