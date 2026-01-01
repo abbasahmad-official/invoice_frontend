@@ -31,6 +31,24 @@ useEffect(()=>{
     getTemplateHTML()
   }
 },[seeInvoice])
+useEffect(() => {
+  if (!invoiceRef.current || !htmlContent) return;
+
+  const iframe = invoiceRef.current;
+
+  const resizeIframe = () => {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    if (!doc) return;
+
+    const height =
+      doc.documentElement.scrollHeight || doc.body.scrollHeight;
+
+    iframe.style.height = `${height}px`;
+  };
+
+  iframe.onload = resizeIframe;
+}, [htmlContent]);
+
 
 const getTemplateHTML = async()=>{
     if(!seeInvoice?._id){
@@ -157,7 +175,7 @@ console.log("reachedEnd")
       <div className="invoice-wrapper" >
 {initialLoad? <SpinningWheel size={60}/> :<iframe
     ref={invoiceRef}
-    style={{ width: "100%", border: "none", height:"1500px" }}
+    style={{ width: "100%", border: "none" }}
     srcDoc={htmlContent} // this is your fetched HTML string
     title="Invoice Preview"
   />}
