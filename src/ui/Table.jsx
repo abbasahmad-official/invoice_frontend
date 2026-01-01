@@ -21,6 +21,7 @@ import jsPDF from "jspdf";
 import { useCurrency } from "../CurrencyContext";
 import SpinningWheel from "./SpinningWheel";
 import Plan from "./Plan";
+
 const Table = ({
   // setManager,
   setCreateUpdateManager,
@@ -48,6 +49,7 @@ const Table = ({
   setShouldReloadProducts = null,
   setOrgs = null
 }) => {
+  const {currency:currencyValue} = useCurrency()
   const [error, setError] = useState([]);
   const { user, token } = isAuthenticated();
   const [invoice, setInvoice] = useState({});
@@ -60,7 +62,11 @@ const {currency, setCurrencyCode} = useCurrency({})
 
 
   useEffect(()=>{
-    setCurrencyCode(user?.currency.code)
+    if(user.role !== "superAdmin"){
+      setCurrencyCode(user?.currency?.code)
+    } else {
+      setCurrencyCode(2020)
+    }
 // currencyChange()
 //   }, [])
 //   const currencyChange = async() =>{
@@ -168,7 +174,7 @@ const {currency, setCurrencyCode} = useCurrency({})
   const downloadPDF = async (invoice) => {
     setLoading(true)
     setInvId(invoice._id)
-    const blob = await generatePDFByTemplate(invoice) 
+    const blob = await generatePDFByTemplate(invoice,user?.currency, currencyValue) 
      if (!blob) {
       setLoading(false)
     console.error("Failed to generate PDF");

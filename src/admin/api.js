@@ -1194,9 +1194,9 @@ export const generatePDF = async (payload, token) => {
   }
 };
 
-export const generatePDFByTemplate = async (invoice) => {
+export const generatePDFByTemplate = async (invoice,  currency, currencyValue,) => {
   try {
-    const response = await fetch(`${API}/generate-pdf/template`, {
+    const response = await fetch(`${API}/generate-pdf/template?currencyValue=${encodeURIComponent(currencyValue)}&currencySymbol=${encodeURIComponent(currency?.symbol)}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1278,9 +1278,9 @@ export const verifyOTP = async (body) => {
 
 
 // invoice-template/html/:invoiceId
-export const generateHTML = async (invoiceId) => {
+export const generateHTML = async (invoiceId, currency, currencyValue) => {
   try {
-    const response = await fetch(`${API}/invoice-template/html/${invoiceId}`, {
+    const response = await fetch(`${API}/invoice-template/html/${invoiceId}?currencySymbol=${encodeURIComponent(currency?.symbol)}&currencyValue=${encodeURIComponent(currencyValue)}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

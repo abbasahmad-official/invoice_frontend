@@ -75,7 +75,7 @@ const Dashboard = ({setActiveSection, setDirectLink}) => {
                 </div>
                 <div className="middle">
                     
-                    <p>{user?.currency.symbol}{(invoice.totalAmount * currency).toFixed(2)}</p>
+                    <p>{user?.currency?user?.currency?.symbol: "$"} {(invoice.totalAmount * currency).toFixed(2)}</p>
                     <p>{invoice.status}</p>
                 </div>
             </div>

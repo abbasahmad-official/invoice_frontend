@@ -62,7 +62,7 @@ const OrganizationalSettings = ({
        htmlName:"invoice-template2.html"
     },
      {
-      id: 2,
+      id: 3,
       name: "Orange Thread",
       img: "/template-invoice3.png",
        htmlName:"invoice-template3.html"
@@ -202,8 +202,9 @@ setShowPremium(true)
     }
 
     // 3️⃣ Template selection (merged function)
-    try {
-      const data = await setTemplateName(
+    if(isPremium){
+      try {
+        const data = await setTemplateName(
         user.organization,
         selectedTemplate,
         token
@@ -222,6 +223,7 @@ setShowPremium(true)
       setLoading(false);
       return;
     }
+  }
 
     // Final success
     setSuccess("Settings saved successfully");

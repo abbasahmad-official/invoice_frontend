@@ -7,12 +7,14 @@ const CurrencyContext = createContext();
 export const CurrencyProvider = ({ children }) => {
     const { user, token } = isAuthenticated();
   const [currency, setCurrency] = useState(null);
-  const[currencyCode, setCurrencyCode] = useState(user?.currency.code)
+  const[currencyCode, setCurrencyCode] = useState(user?.currency?.code || 2020)
 
   const currencyChange = async () => {
-    const data = await convertCurrency("USD");
-    setCurrency(data.rates[user?.currency.code]);
-  };
+    if(user.role !== "superAdmin"){
+      const data = await convertCurrency("USD");
+      setCurrency(data.rates[user?.currency.code]);
+    };
+  }
 
   useEffect(() => {
     currencyChange();

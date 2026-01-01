@@ -88,11 +88,15 @@ const fetchLogo = async()=>{
 const fetchLogoPic = async () => {
   try {
     const blob = await getLogoPic(user._id, token);
+   if(blob.error){
+      setImgUrl("/logo-invoice.png")
+      return
+    }
      const imageUrl = URL.createObjectURL(blob);
     // console.log(imageUrl)
     setImgUrl(imageUrl);
   } catch (error) {
-    console.error("Failed to fetch logo pic:", error);
+    console.error("Failed to fetch logo pic:", error.message);
     setImgUrl("/logo-invoice.png");
   }
 };

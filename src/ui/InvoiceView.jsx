@@ -12,15 +12,18 @@ import InvoicePDF from "../ui/InvoicePdf";
 import "../styles/viewInvoice.css";
 import { generatePDF } from "../admin/api";
 import SpinningWheel from "./SpinningWheel";
+import { useCurrency } from "../CurrencyContext";
 
 const InvoiceView = ({ setViewInvoice, seeInvoice }) => {
-  const invoiceRef = useRef();
+  const {currency:currencyValue} = useCurrency()
+  const invoiceRef = useRef(null);
   const [htmlContent, setHtmlContent] = useState("")
   const { user, token } = isAuthenticated();
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingSend, setLoadingSend] = useState(false);
   const [initialLoad,setInitialLoading] = useState(false)
+  // const [currencyValue, setCurrencyValue] = useState(null)
 
 
 useEffect(()=>{
@@ -35,7 +38,7 @@ const getTemplateHTML = async()=>{
       return
     }
     setInitialLoading(true)
-    const html = await generateHTML(seeInvoice?._id)
+    const html = await generateHTML(seeInvoice?._id, user?.currency, currencyValue)
     if(!html){
       console.log("no template retrived")
       setInitialLoading(false)
@@ -48,7 +51,7 @@ const getTemplateHTML = async()=>{
   const downloadPDF = async () => {
     setLoading(true)
   if (!seeInvoice) return;
-   const blob = await generatePDFByTemplate(seeInvoice)
+   const blob = await generatePDFByTemplate(seeInvoice,user?.currency, currencyValue )
   if (!blob) {
     console.error("Failed to generate PDF");
     setLoading(false);
